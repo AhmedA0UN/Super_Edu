@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperEdu_isimg · Plateforme Complète</title>
     <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -134,9 +134,16 @@
         .resource-card:hover { box-shadow: var(--shadow-xl); transform: translateY(-4px); }
         .widget { background: white; border-radius: 24px; padding: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-light); margin-bottom: 24px; }
         .widget-title { font-weight: 700; font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 1000; }
         .modal-overlay.active { display: flex; }
         .modal { background: white; border-radius: 28px; padding: 32px; max-width: 400px; width: 90%; }
+        .modal-header-styled { display: flex; justify-content: space-between; align-items: center; }
+        .creds-note { text-align: center; font-size: 13px; margin-top: 16px; }
+        .page-header-primary { background: var(--primary); border-radius: 28px; padding: 32px; color: white; }
+        .page-header-gradient { background: linear-gradient(135deg, #4c1d95, #5b21b6); padding: 32px; border-radius: 28px; color: white; }
+        .btn-block-margin { margin-top: 16px; }
+        .last-active { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+        .modal-content-text { margin-top: 16px; }
         .modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-secondary); border: none; cursor: pointer; }
         
         @media (max-width: 1000px) { .sidebar { width: 80px; } .logo-text, .nav-item span, .user-info, .nav-section-title, .progress-overview { display: none; } .main-content { margin-left: 80px; } .quick-stats { grid-template-columns: repeat(2,1fr); } }
@@ -180,7 +187,7 @@
                     <div class="input-group"><label>Email</label><input type="email" id="loginEmail" placeholder="exemple@isimg.tn"></div>
                     <div class="input-group"><label>Mot de passe</label><input type="password" id="loginPassword" placeholder="••••••"></div>
                     <button class="btn-block" id="doLoginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Se connecter</button>
-                    <p style="text-align:center; font-size:13px; margin-top:16px;">👨‍👩‍👧 Parent: parent@isimg.tn / parent123<br>👨‍🎓 Étudiant: etudiant@isimg.tn / 123456</p>
+                    <p class="creds-note">👨‍👩‍👧 Parent: parent@isimg.tn / parent123<br>👨‍🎓 Étudiant: etudiant@isimg.tn / 123456</p>
                 </div>
                 <div class="auth-form" id="registerForm">
                     <div class="input-group"><label>Nom complet</label><input type="text" id="regName" placeholder="Votre nom"></div>
