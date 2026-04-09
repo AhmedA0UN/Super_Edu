@@ -845,7 +845,19 @@
                             <option>Physique</option>
                             <option>Informatique</option>
                         </select>
+                        <select id="quizMode" style="padding:10px 16px; border-radius:30px; border:1px solid var(--border-light);">
+                            <option>Mode classique</option>
+                            <option>Révision ciblée</option>
+                            <option>Challenge chrono</option>
+                            <option>Questions difficiles</option>
+                        </select>
                         <span class="badge" style="font-size:13px; padding:8px 14px;">Quiz personnalisé</span>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+                        <button class="btn-secondary" onclick="showNotification('Révision ciblée activée !')">Voir mes lacunes</button>
+                        <button class="btn-secondary" onclick="showNotification('Mode chrono lancé !')">Mode chrono</button>
+                        <button class="btn-secondary" onclick="showNotification('Fiche de révision générée !')">Fiche de révision</button>
+                        <button class="btn-secondary" onclick="showNotification('Nouvelle série de questions chargée !')">Nouvelle série</button>
                     </div>
                     <div id="quizArea">
                         <div class="quiz-question" id="quizQuestion">Quelle est la dérivée de x² ?</div>
