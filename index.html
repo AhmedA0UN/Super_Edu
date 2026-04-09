@@ -2147,6 +2147,15 @@
             }, 3000);
         }
 
+        function showModal(title, htmlContent) {
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalMessage = document.getElementById('modalMessage');
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = htmlContent;
+            modal.classList.add('active');
+        }
+
         function showLevelResources(levelId) {
             const level = levelsData.find(l => l.id === levelId);
             if (!level) return;
@@ -2502,8 +2511,26 @@
             ? 'Excellent CV : il inclut les éléments essentiels attendus par un recruteur et un ATS.'
             : `Améliore le CV en ajoutant : ${missing.slice(0, 4).join(', ')}${missing.length > 4 ? ', ...' : ''}.`;
         const fileNote = cvFileName ? `\nPDF détecté : ${cvFileName}. Assure-toi que le fichier est bien lisible et compatible.` : '\nAucun PDF joint. Tu peux ajouter ton CV en PDF pour un meilleur suivi.';
-        const result = `Score CV : ${score}/100\n${feedback}${fileNote}`;
-        alert(result);
+        const resultHtml = `
+            <div style="display:grid; gap:16px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:16px; background: #eef6ff; border-radius: 20px; border: 1px solid rgba(59,130,246,0.18);">
+                    <div>
+                        <div style="font-size:18px; font-weight:700;">Score CV</div>
+                        <div style="color: var(--text-secondary);">Évaluation basée sur la présence des éléments clés</div>
+                    </div>
+                    <div style="font-size:32px; font-weight:800; color: #2563eb;">${score}/100</div>
+                </div>
+                <div style="padding:16px; background:#ffffff; border-radius:20px; border:1px solid rgba(15,23,42,0.06);">
+                    <div style="font-weight:700; margin-bottom:10px;">Feedback</div>
+                    <p style="margin:0; color: var(--text-secondary);">${feedback}</p>
+                </div>
+                <div style="padding:16px; background:#f8fafc; border-radius:20px; border:1px solid rgba(148,163,184,0.25);">
+                    <div style="font-weight:700; margin-bottom:10px;">Fichier PDF</div>
+                    <p style="margin:0; color: var(--text-secondary);">${fileNote}</p>
+                </div>
+            </div>
+        `;
+        showModal('Évaluation de ton CV', resultHtml);
     }
 
     document.getElementById('simCVFile').addEventListener('change', (event) => {
