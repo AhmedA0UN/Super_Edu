@@ -1481,6 +1481,624 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Section Supplémentaire : Gestion du Temps d'Étude (Time Animé) -->
+                            <div style="margin-top: 32px; border-top: 2px solid var(--border-light); padding-top: 24px;">
+                                <h3 style="margin-bottom: 24px; color: var(--primary); text-align: center; font-size: 20px;"><i class="fas fa-clock"></i> Gestion du Temps d'Étude</h3>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                                    <!-- Pomodoro Timer Personnalisable -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-hourglass-half"></i> Pomodoro Personnalisé</h4>
+                                        <div style="text-align: center; margin-bottom: 20px;">
+                                            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 16px;">
+                                                <div style="text-align: center;">
+                                                    <label style="font-size: 12px; color: var(--text-secondary);">Travail</label>
+                                                    <input type="number" id="pomodoroWork" value="25" min="1" max="60" style="width: 60px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; text-align: center;">
+                                                </div>
+                                                <div style="text-align: center;">
+                                                    <label style="font-size: 12px; color: var(--text-secondary);">Pause</label>
+                                                    <input type="number" id="pomodoroBreak" value="5" min="1" max="30" style="width: 60px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; text-align: center;">
+                                                </div>
+                                                <div style="text-align: center;">
+                                                    <label style="font-size: 12px; color: var(--text-secondary);">Cycles</label>
+                                                    <input type="number" id="pomodoroCycles" value="4" min="1" max="10" style="width: 60px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; text-align: center;">
+                                                </div>
+                                            </div>
+                                            <div id="pomodoroTimer" style="font-size: 48px; font-weight: bold; color: var(--primary); font-family: monospace; margin-bottom: 16px;">25:00</div>
+                                            <div id="pomodoroStatus" style="font-size: 16px; color: var(--text-secondary); margin-bottom: 16px;">Prêt à commencer</div>
+                                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                                <button id="pomodoroStart" class="btn-primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Démarrer</button>
+                                                <button id="pomodoroPause" class="btn-outline" onclick="pausePomodoro()" style="display: none;"><i class="fas fa-pause"></i> Pause</button>
+                                                <button id="pomodoroReset" class="btn-outline" onclick="resetPomodoro()"><i class="fas fa-redo"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                        <div style="background: var(--bg-secondary); border-radius: 8px; padding: 12px;">
+                                            <div style="font-size: 14px; margin-bottom: 8px;">Session actuelle :</div>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <span>Cycle 1/4</span>
+                                                <span id="pomodoroCompleted">0/4 terminé</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sessions de Révision Programmées -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-calendar-check"></i> Sessions Programmées</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                                <div class="scheduled-session" style="padding: 12px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                                    <div style="font-weight: 600; font-size: 14px; color: #92400e;">Révision Mathématiques</div>
+                                                    <div style="font-size: 12px; color: #92400e;">Aujourd'hui 14:00 - 15:30 (1h 30min)</div>
+                                                    <div style="font-size: 11px; color: #92400e; margin-top: 4px;">Chapitre 5: Dérivées et intégrales</div>
+                                                </div>
+                                                <div class="scheduled-session" style="padding: 12px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                                    <div style="font-weight: 600; font-size: 14px; color: #1e40af;">Physique - Exercices</div>
+                                                    <div style="font-size: 12px; color: #1e40af;">Demain 10:00 - 11:00 (1h)</div>
+                                                    <div style="font-size: 11px; color: #1e40af; margin-top: 4px;">Mécanique classique</div>
+                                                </div>
+                                                <div class="scheduled-session" style="padding: 12px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 8px; border-left: 4px solid #10b981;">
+                                                    <div style="font-weight: 600; font-size: 14px; color: #166534;">Informatique - Projet</div>
+                                                    <div style="font-size: 12px; color: #166534;">Jeudi 16:00 - 18:00 (2h)</div>
+                                                    <div style="font-size: 11px; color: #166534; margin-top: 4px;">Algorithmique avancée</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary" onclick="scheduleNewSession()" style="width: 100%;"><i class="fas fa-plus"></i> Programmer une session</button>
+                                    </div>
+
+                                    <!-- Techniques de Mémorisation (Spaced Repetition) -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-brain"></i> Spaced Repetition</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                                                <div style="font-size: 16px; font-weight: 600; color: #0369a1; margin-bottom: 8px;"><i class="fas fa-lightbulb"></i> Carte du jour</div>
+                                                <div style="font-size: 14px; color: #0369a1;">Quelle est la formule de la dérivée de x² ?</div>
+                                                <div style="font-size: 12px; color: #0369a1; margin-top: 8px; opacity: 0.8;">Révisée il y a 2 jours - Niveau: Intermédiaire</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">À réviser aujourd'hui</span>
+                                                    <span style="font-weight: 600; color: var(--primary);">12 cartes</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Révisées cette semaine</span>
+                                                    <span style="font-weight: 600; color: #10b981;">47 cartes</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Maîtrise globale</span>
+                                                    <span style="font-weight: 600; color: #f59e0b;">73%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn-outline" onclick="reviewCards()" style="flex: 1;"><i class="fas fa-play"></i> Réviser</button>
+                                            <button class="btn-outline" onclick="addNewCard()" style="flex: 1;"><i class="fas fa-plus"></i> Ajouter</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Gestion des Pauses Actives -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-walking"></i> Pauses Actives</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="font-size: 14px; margin-bottom: 12px;">Après 2h d'étude, prends une pause de :</div>
+                                            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                                                <button class="break-btn active" onclick="setBreakDuration(5)" style="flex: 1; padding: 8px; border: 2px solid var(--accent); background: var(--accent); color: white; border-radius: 6px; cursor: pointer;">5 min</button>
+                                                <button class="break-btn" onclick="setBreakDuration(10)" style="flex: 1; padding: 8px; border: 2px solid var(--border-light); background: var(--bg-secondary); border-radius: 6px; cursor: pointer;">10 min</button>
+                                                <button class="break-btn" onclick="setBreakDuration(15)" style="flex: 1; padding: 8px; border: 2px solid var(--border-light); background: var(--bg-secondary); border-radius: 6px; cursor: pointer;">15 min</button>
+                                            </div>
+                                            <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                                                <div style="font-weight: 600; font-size: 14px; color: #92400e; margin-bottom: 4px;">Suggestion de pause active :</div>
+                                                <div style="font-size: 13px; color: #92400e;">Marche rapide dans le couloir ou étirements des yeux</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span style="font-size: 14px;">Prochaine pause</span>
+                                                    <span style="font-weight: 600; color: var(--primary);">14:30</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span style="font-size: 14px;">Pauses prises aujourd'hui</span>
+                                                    <span style="font-weight: 600; color: #10b981;">3/5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary" onclick="startBreakNow()" style="width: 100%;"><i class="fas fa-coffee"></i> Prendre une pause maintenant</button>
+                                    </div>
+
+                                    <!-- Focus Modes -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-eye"></i> Modes Focus</h4>
+                                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('deep')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #1e293b, #334155); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-moon" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Focus Profond</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">2h sans distraction - Mode sombre activé</div>
+                                                </div>
+                                            </button>
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('creative')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #ec4899; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-lightbulb" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Créativité</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">1h 30min - Musique douce activée</div>
+                                                </div>
+                                            </button>
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('review')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #f59e0b; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-book-open" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Révision Active</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">45min - Rappels activés</div>
+                                                </div>
+                                            </button>
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('quick')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #dc2626, #ef4444); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #06b6d4; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-bolt" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Session Rapide</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">25min - Pomodoro express</div>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Time Blocking -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-th-large"></i> Time Blocking</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="font-size: 14px; margin-bottom: 12px;">Planning d'aujourd'hui :</div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #1e40af; min-width: 60px;">09:00</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #1e40af;">Mathématiques</div>
+                                                        <div style="font-size: 12px; color: #1e40af;">Chapitre 5 - Dérivées</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #1e40af;">2h</div>
+                                                </div>
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #92400e; min-width: 60px;">11:00</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #92400e;">Pause Active</div>
+                                                        <div style="font-size: 12px; color: #92400e;">Marche + étirements</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #92400e;">15min</div>
+                                                </div>
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 8px; border-left: 4px solid #10b981;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #166534; min-width: 60px;">11:15</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #166534;">Physique</div>
+                                                        <div style="font-size: 12px; color: #166534;">Mécanique - Exercices</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #166534;">1h 30min</div>
+                                                </div>
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #6b21a8; min-width: 60px;">14:00</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #6b21a8;">Révision Active</div>
+                                                        <div style="font-size: 12px; color: #6b21a8;">Spaced repetition</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #6b21a8;">45min</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary" onclick="createTimeBlock()" style="width: 100%;"><i class="fas fa-plus"></i> Créer un bloc</button>
+                                    </div>
+
+                                    <!-- Statistiques de Concentration -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-chart-area"></i> Concentration Analytics</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="text-align: center; margin-bottom: 16px;">
+                                                <div style="font-size: 24px; font-weight: bold; color: var(--primary);">87%</div>
+                                                <div style="font-size: 14px; color: var(--text-secondary);">Taux de concentration moyen</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Meilleure session</span>
+                                                    <span style="font-weight: 600; color: #10b981;">94% (2h 15min)</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Distractions détectées</span>
+                                                    <span style="font-weight: 600; color: #f59e0b;">12 aujourd'hui</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Pics de fatigue</span>
+                                                    <span style="font-weight: 600; color: #ef4444;">14h-15h</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="background: linear-gradient(135deg, #ecfeff, #cffafe); border-radius: 8px; padding: 12px;">
+                                            <div style="font-size: 14px; font-weight: 600; color: #0e7490; margin-bottom: 4px;">💡 Conseil :</div>
+                                            <div style="font-size: 13px; color: #0e7490;">Ta concentration baisse après 14h. Planifie tes sessions importantes le matin.</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Alertes de Fatigue -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-exclamation-triangle"></i> Alertes Fatigue</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #ef4444;">
+                                                <div style="font-size: 16px; font-weight: 600; color: #dc2626; margin-bottom: 8px;"><i class="fas fa-exclamation-triangle"></i> Alerte Fatigue Détectée</div>
+                                                <div style="font-size: 14px; color: #dc2626;">Tu étudies depuis 3h 45min sans pause. Risque de baisse de concentration !</div>
+                                                <div style="margin-top: 12px;">
+                                                    <button class="btn-primary" onclick="takeImmediateBreak()" style="background: #dc2626; border: none; font-size: 12px; padding: 6px 12px;">Prendre une pause maintenant</button>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Niveau de fatigue actuel</span>
+                                                    <span style="font-weight: 600; color: #f59e0b;">Modéré</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Prochaine vérification</span>
+                                                    <span style="font-weight: 600; color: var(--primary);">Dans 30min</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Score de récupération</span>
+                                                    <span style="font-weight: 600; color: #10b981;">78%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn-outline" onclick="viewFatigueHistory()" style="flex: 1;"><i class="fas fa-history"></i> Historique</button>
+                                            <button class="btn-outline" onclick="configureAlerts()" style="flex: 1;"><i class="fas fa-cog"></i> Configurer</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Optimisation du Rythme -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-tachometer-alt"></i> Optimisation Rythme</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                                                <div style="font-size: 16px; font-weight: 600; color: #0369a1; margin-bottom: 8px;"><i class="fas fa-star"></i> Rythme Optimal Calculé</div>
+                                                <div style="font-size: 14px; color: #0369a1;">45min d'étude active + 10min de pause + 5min de révision</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px;">Productivité actuelle</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">Basée sur tes métriques</div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 18px; font-weight: bold; color: #10b981;">92%</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">+8% vs moyenne</div>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px;">Rythme recommandé</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">Pour maximiser la rétention</div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 18px; font-weight: bold; color: var(--primary);">50min</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">sessions actives</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn-outline" onclick="applyOptimalRhythm()" style="flex: 1;"><i class="fas fa-magic"></i> Appliquer</button>
+                                            <button class="btn-outline" onclick="customizeRhythm()" style="flex: 1;"><i class="fas fa-sliders-h"></i> Personnaliser</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Section Supplémentaire : Gestion du Temps d'Étude (Time Animé) -->
+                            <div style="margin-top: 32px; border-top: 2px solid var(--border-light); padding-top: 24px;">
+                                <h3 style="margin-bottom: 24px; color: var(--primary); text-align: center; font-size: 20px;"><i class="fas fa-clock"></i> Gestion du Temps d'Étude</h3>
+
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+                                    <!-- Pomodoro Timer Personnalisable -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-hourglass-half"></i> Pomodoro Personnalisé</h4>
+                                        <div style="text-align: center; margin-bottom: 20px;">
+                                            <div style="display: flex; justify-content: center; gap: 12px; margin-bottom: 16px;">
+                                                <div style="text-align: center;">
+                                                    <label style="font-size: 12px; color: var(--text-secondary);">Travail</label>
+                                                    <input type="number" id="pomodoroWork" value="25" min="1" max="60" style="width: 60px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; text-align: center;">
+                                                </div>
+                                                <div style="text-align: center;">
+                                                    <label style="font-size: 12px; color: var(--text-secondary);">Pause</label>
+                                                    <input type="number" id="pomodoroBreak" value="5" min="1" max="30" style="width: 60px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; text-align: center;">
+                                                </div>
+                                                <div style="text-align: center;">
+                                                    <label style="font-size: 12px; color: var(--text-secondary);">Cycles</label>
+                                                    <input type="number" id="pomodoroCycles" value="4" min="1" max="10" style="width: 60px; padding: 8px; border: 1px solid var(--border-light); border-radius: 6px; text-align: center;">
+                                                </div>
+                                            </div>
+                                            <div id="pomodoroTimer" style="font-size: 48px; font-weight: bold; color: var(--primary); font-family: monospace; margin-bottom: 16px;">25:00</div>
+                                            <div id="pomodoroStatus" style="font-size: 16px; color: var(--text-secondary); margin-bottom: 16px;">Prêt à commencer</div>
+                                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                                <button id="pomodoroStart" class="btn-primary" onclick="startPomodoro()"><i class="fas fa-play"></i> Démarrer</button>
+                                                <button id="pomodoroPause" class="btn-outline" onclick="pausePomodoro()" style="display: none;"><i class="fas fa-pause"></i> Pause</button>
+                                                <button id="pomodoroReset" class="btn-outline" onclick="resetPomodoro()"><i class="fas fa-redo"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                        <div style="background: var(--bg-secondary); border-radius: 8px; padding: 12px;">
+                                            <div style="font-size: 14px; margin-bottom: 8px;">Session actuelle :</div>
+                                            <div style="display: flex; justify-content: space-between;">
+                                                <span>Cycle 1/4</span>
+                                                <span id="pomodoroCompleted">0/4 terminé</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sessions de Révision Programmées -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-calendar-check"></i> Sessions Programmées</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                                <div class="scheduled-session" style="padding: 12px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                                    <div style="font-weight: 600; font-size: 14px; color: #92400e;">Révision Mathématiques</div>
+                                                    <div style="font-size: 12px; color: #92400e;">Aujourd'hui 14:00 - 15:30 (1h 30min)</div>
+                                                    <div style="font-size: 11px; color: #92400e; margin-top: 4px;">Chapitre 5: Dérivées et intégrales</div>
+                                                </div>
+                                                <div class="scheduled-session" style="padding: 12px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                                    <div style="font-weight: 600; font-size: 14px; color: #1e40af;">Physique - Exercices</div>
+                                                    <div style="font-size: 12px; color: #1e40af;">Demain 10:00 - 11:00 (1h)</div>
+                                                    <div style="font-size: 11px; color: #1e40af; margin-top: 4px;">Mécanique classique</div>
+                                                </div>
+                                                <div class="scheduled-session" style="padding: 12px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 8px; border-left: 4px solid #10b981;">
+                                                    <div style="font-weight: 600; font-size: 14px; color: #166534;">Informatique - Projet</div>
+                                                    <div style="font-size: 12px; color: #166534;">Jeudi 16:00 - 18:00 (2h)</div>
+                                                    <div style="font-size: 11px; color: #166534; margin-top: 4px;">Algorithmique avancée</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary" onclick="scheduleNewSession()" style="width: 100%;"><i class="fas fa-plus"></i> Programmer une session</button>
+                                    </div>
+
+                                    <!-- Techniques de Mémorisation (Spaced Repetition) -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-brain"></i> Spaced Repetition</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                                                <div style="font-size: 16px; font-weight: 600; color: #0369a1; margin-bottom: 8px;"><i class="fas fa-lightbulb"></i> Carte du jour</div>
+                                                <div style="font-size: 14px; color: #0369a1;">Quelle est la formule de la dérivée de x² ?</div>
+                                                <div style="font-size: 12px; color: #0369a1; margin-top: 8px; opacity: 0.8;">Révisée il y a 2 jours - Niveau: Intermédiaire</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">À réviser aujourd'hui</span>
+                                                    <span style="font-weight: 600; color: var(--primary);">12 cartes</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Révisées cette semaine</span>
+                                                    <span style="font-weight: 600; color: #10b981;">47 cartes</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Maîtrise globale</span>
+                                                    <span style="font-weight: 600; color: #f59e0b;">73%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn-outline" onclick="reviewCards()" style="flex: 1;"><i class="fas fa-play"></i> Réviser</button>
+                                            <button class="btn-outline" onclick="addNewCard()" style="flex: 1;"><i class="fas fa-plus"></i> Ajouter</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Gestion des Pauses Actives -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-walking"></i> Pauses Actives</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="font-size: 14px; margin-bottom: 12px;">Après 2h d'étude, prends une pause de :</div>
+                                            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                                                <button class="break-btn active" onclick="setBreakDuration(5)" style="flex: 1; padding: 8px; border: 2px solid var(--accent); background: var(--accent); color: white; border-radius: 6px; cursor: pointer;">5 min</button>
+                                                <button class="break-btn" onclick="setBreakDuration(10)" style="flex: 1; padding: 8px; border: 2px solid var(--border-light); background: var(--bg-secondary); border-radius: 6px; cursor: pointer;">10 min</button>
+                                                <button class="break-btn" onclick="setBreakDuration(15)" style="flex: 1; padding: 8px; border: 2px solid var(--border-light); background: var(--bg-secondary); border-radius: 6px; cursor: pointer;">15 min</button>
+                                            </div>
+                                            <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                                                <div style="font-weight: 600; font-size: 14px; color: #92400e; margin-bottom: 4px;">Suggestion de pause active :</div>
+                                                <div style="font-size: 13px; color: #92400e;">Marche rapide dans le couloir ou étirements des yeux</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span style="font-size: 14px;">Prochaine pause</span>
+                                                    <span style="font-weight: 600; color: var(--primary);">14:30</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                    <span style="font-size: 14px;">Pauses prises aujourd'hui</span>
+                                                    <span style="font-weight: 600; color: #10b981;">3/5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary" onclick="startBreakNow()" style="width: 100%;"><i class="fas fa-coffee"></i> Prendre une pause maintenant</button>
+                                    </div>
+
+                                    <!-- Focus Modes -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-eye"></i> Modes Focus</h4>
+                                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('deep')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #1e293b, #334155); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-moon" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Focus Profond</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">2h sans distraction - Mode sombre activé</div>
+                                                </div>
+                                            </button>
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('creative')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #7c3aed, #a855f7); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #ec4899; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-lightbulb" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Créativité</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">1h 30min - Musique douce activée</div>
+                                                </div>
+                                            </button>
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('review')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #059669, #10b981); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #f59e0b; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-book-open" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Révision Active</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">45min - Rappels activés</div>
+                                                </div>
+                                            </button>
+                                            <button class="focus-mode-btn" onclick="activateFocusMode('quick')" style="display: flex; align-items: center; gap: 12px; padding: 16px; background: linear-gradient(135deg, #dc2626, #ef4444); color: white; border: none; border-radius: 12px; cursor: pointer; text-align: left;">
+                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #06b6d4; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fas fa-bolt" style="color: white;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-weight: 600; font-size: 16px;">Session Rapide</div>
+                                                    <div style="font-size: 12px; opacity: 0.8;">25min - Pomodoro express</div>
+                                                </div>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Time Blocking -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-th-large"></i> Time Blocking</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="font-size: 14px; margin-bottom: 12px;">Planning d'aujourd'hui :</div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 8px; border-left: 4px solid #3b82f6;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #1e40af; min-width: 60px;">09:00</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #1e40af;">Mathématiques</div>
+                                                        <div style="font-size: 12px; color: #1e40af;">Chapitre 5 - Dérivées</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #1e40af;">2h</div>
+                                                </div>
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 8px; border-left: 4px solid #f59e0b;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #92400e; min-width: 60px;">11:00</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #92400e;">Pause Active</div>
+                                                        <div style="font-size: 12px; color: #92400e;">Marche + étirements</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #92400e;">15min</div>
+                                                </div>
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #dcfce7, #bbf7d0); border-radius: 8px; border-left: 4px solid #10b981;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #166534; min-width: 60px;">11:15</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #166534;">Physique</div>
+                                                        <div style="font-size: 12px; color: #166534;">Mécanique - Exercices</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #166534;">1h 30min</div>
+                                                </div>
+                                                <div class="time-block" style="display: flex; align-items: center; gap: 12px; padding: 12px; background: linear-gradient(135deg, #f3e8ff, #e9d5ff); border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #6b21a8; min-width: 60px;">14:00</div>
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px; color: #6b21a8;">Révision Active</div>
+                                                        <div style="font-size: 12px; color: #6b21a8;">Spaced repetition</div>
+                                                    </div>
+                                                    <div style="margin-left: auto; font-size: 12px; color: #6b21a8;">45min</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="btn-primary" onclick="createTimeBlock()" style="width: 100%;"><i class="fas fa-plus"></i> Créer un bloc</button>
+                                    </div>
+
+                                    <!-- Statistiques de Concentration -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-chart-area"></i> Concentration Analytics</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="text-align: center; margin-bottom: 16px;">
+                                                <div style="font-size: 24px; font-weight: bold; color: var(--primary);">87%</div>
+                                                <div style="font-size: 14px; color: var(--text-secondary);">Taux de concentration moyen</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Meilleure session</span>
+                                                    <span style="font-weight: 600; color: #10b981;">94% (2h 15min)</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Distractions détectées</span>
+                                                    <span style="font-weight: 600; color: #f59e0b;">12 aujourd'hui</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Pics de fatigue</span>
+                                                    <span style="font-weight: 600; color: #ef4444;">14h-15h</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="background: linear-gradient(135deg, #ecfeff, #cffafe); border-radius: 8px; padding: 12px;">
+                                            <div style="font-size: 14px; font-weight: 600; color: #0e7490; margin-bottom: 4px;">💡 Conseil :</div>
+                                            <div style="font-size: 13px; color: #0e7490;">Ta concentration baisse après 14h. Planifie tes sessions importantes le matin.</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Alertes de Fatigue -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-exclamation-triangle"></i> Alertes Fatigue</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; padding: 16px; margin-bottom: 16px; border-left: 4px solid #ef4444;">
+                                                <div style="font-size: 16px; font-weight: 600; color: #dc2626; margin-bottom: 8px;"><i class="fas fa-exclamation-triangle"></i> Alerte Fatigue Détectée</div>
+                                                <div style="font-size: 14px; color: #dc2626;">Tu étudies depuis 3h 45min sans pause. Risque de baisse de concentration !</div>
+                                                <div style="margin-top: 12px;">
+                                                    <button class="btn-primary" onclick="takeImmediateBreak()" style="background: #dc2626; border: none; font-size: 12px; padding: 6px 12px;">Prendre une pause maintenant</button>
+                                                </div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Niveau de fatigue actuel</span>
+                                                    <span style="font-weight: 600; color: #f59e0b;">Modéré</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Prochaine vérification</span>
+                                                    <span style="font-weight: 600; color: var(--primary);">Dans 30min</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--bg-secondary); border-radius: 6px;">
+                                                    <span style="font-size: 14px;">Score de récupération</span>
+                                                    <span style="font-weight: 600; color: #10b981;">78%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn-outline" onclick="viewFatigueHistory()" style="flex: 1;"><i class="fas fa-history"></i> Historique</button>
+                                            <button class="btn-outline" onclick="configureAlerts()" style="flex: 1;"><i class="fas fa-cog"></i> Configurer</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Optimisation du Rythme -->
+                                    <div class="result-card">
+                                        <h4 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-tachometer-alt"></i> Optimisation Rythme</h4>
+                                        <div style="margin-bottom: 16px;">
+                                            <div style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                                                <div style="font-size: 16px; font-weight: 600; color: #0369a1; margin-bottom: 8px;"><i class="fas fa-star"></i> Rythme Optimal Calculé</div>
+                                                <div style="font-size: 14px; color: #0369a1;">45min d'étude active + 10min de pause + 5min de révision</div>
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px;">Productivité actuelle</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">Basée sur tes métriques</div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 18px; font-weight: bold; color: #10b981;">92%</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">+8% vs moyenne</div>
+                                                    </div>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 8px;">
+                                                    <div>
+                                                        <div style="font-weight: 600; font-size: 14px;">Rythme recommandé</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">Pour maximiser la rétention</div>
+                                                    </div>
+                                                    <div style="text-align: right;">
+                                                        <div style="font-size: 18px; font-weight: bold; color: var(--primary);">50min</div>
+                                                        <div style="font-size: 12px; color: var(--text-secondary);">sessions actives</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; gap: 8px;">
+                                            <button class="btn-outline" onclick="applyOptimalRhythm()" style="flex: 1;"><i class="fas fa-magic"></i> Appliquer</button>
+                                            <button class="btn-outline" onclick="customizeRhythm()" style="flex: 1;"><i class="fas fa-sliders-h"></i> Personnaliser</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2509,6 +3127,284 @@ Continue comme ça ! 🚀
 
         alert(notificationText);
     }
+
+    // ===== NOUVELLES FONCTIONS POUR LA GESTION DU TEMPS (Time Animé) =====
+
+    // Pomodoro Timer Personnalisable
+    let pomodoroInterval = null;
+    let pomodoroTimeLeft = 25 * 60; // 25 minutes en secondes
+    let pomodoroIsWork = true;
+    let pomodoroCurrentCycle = 1;
+    let pomodoroTotalCycles = 4;
+    let pomodoroWorkTime = 25;
+    let pomodoroBreakTime = 5;
+
+    function startPomodoro() {
+        if (!pomodoroInterval) {
+            // Récupérer les valeurs des inputs
+            pomodoroWorkTime = parseInt(document.getElementById('pomodoroWork').value) || 25;
+            pomodoroBreakTime = parseInt(document.getElementById('pomodoroBreak').value) || 5;
+            pomodoroTotalCycles = parseInt(document.getElementById('pomodoroCycles').value) || 4;
+
+            if (pomodoroIsWork) {
+                pomodoroTimeLeft = pomodoroWorkTime * 60;
+            } else {
+                pomodoroTimeLeft = pomodoroBreakTime * 60;
+            }
+
+            pomodoroInterval = setInterval(updatePomodoroTimer, 1000);
+
+            document.getElementById('pomodoroStart').style.display = 'none';
+            document.getElementById('pomodoroPause').style.display = 'inline-block';
+            updatePomodoroStatus();
+            showNotification('Pomodoro démarré !');
+        }
+    }
+
+    function pausePomodoro() {
+        if (pomodoroInterval) {
+            clearInterval(pomodoroInterval);
+            pomodoroInterval = null;
+            document.getElementById('pomodoroStart').style.display = 'inline-block';
+            document.getElementById('pomodoroPause').style.display = 'none';
+            showNotification('Pomodoro en pause');
+        }
+    }
+
+    function resetPomodoro() {
+        clearInterval(pomodoroInterval);
+        pomodoroInterval = null;
+        pomodoroTimeLeft = pomodoroWorkTime * 60;
+        pomodoroIsWork = true;
+        pomodoroCurrentCycle = 1;
+
+        updatePomodoroDisplay();
+        updatePomodoroStatus();
+
+        document.getElementById('pomodoroStart').style.display = 'inline-block';
+        document.getElementById('pomodoroPause').style.display = 'none';
+        document.getElementById('pomodoroStop').style.display = 'none';
+
+        showNotification('Pomodoro réinitialisé');
+    }
+
+    function updatePomodoroTimer() {
+        pomodoroTimeLeft--;
+
+        if (pomodoroTimeLeft <= 0) {
+            // Changer de phase (travail/pause)
+            pomodoroIsWork = !pomodoroIsWork;
+
+            if (pomodoroIsWork) {
+                pomodoroCurrentCycle++;
+                if (pomodoroCurrentCycle > pomodoroTotalCycles) {
+                    // Session terminée
+                    clearInterval(pomodoroInterval);
+                    pomodoroInterval = null;
+                    showNotification('🎉 Session Pomodoro terminée ! Félicitations !');
+                    document.getElementById('pomodoroStart').style.display = 'inline-block';
+                    document.getElementById('pomodoroPause').style.display = 'none';
+                    return;
+                }
+                pomodoroTimeLeft = pomodoroWorkTime * 60;
+                showNotification('💪 C\'est parti pour une nouvelle session de travail !');
+            } else {
+                pomodoroTimeLeft = pomodoroBreakTime * 60;
+                showNotification('☕ Pause bien méritée ! Détends-toi.');
+            }
+        }
+
+        updatePomodoroDisplay();
+        updatePomodoroStatus();
+    }
+
+    function updatePomodoroDisplay() {
+        const minutes = Math.floor(pomodoroTimeLeft / 60);
+        const seconds = pomodoroTimeLeft % 60;
+        const display = document.getElementById('pomodoroTimer');
+        if (display) {
+            display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+    }
+
+    function updatePomodoroStatus() {
+        const statusElement = document.getElementById('pomodoroStatus');
+        const completedElement = document.getElementById('pomodoroCompleted');
+
+        if (statusElement) {
+            if (pomodoroIsWork) {
+                statusElement.textContent = `Session de travail - Cycle ${pomodoroCurrentCycle}/${pomodoroTotalCycles}`;
+                statusElement.style.color = 'var(--primary)';
+            } else {
+                statusElement.textContent = `Pause - Cycle ${pomodoroCurrentCycle}/${pomodoroTotalCycles}`;
+                statusElement.style.color = '#10b981';
+            }
+        }
+
+        if (completedElement) {
+            completedElement.textContent = `${pomodoroCurrentCycle - 1}/${pomodoroTotalCycles} terminé`;
+        }
+    }
+
+    // Sessions de Révision Programmées
+    function scheduleNewSession() {
+        const subject = prompt('Matière :');
+        const date = prompt('Date (YYYY-MM-DD) :');
+        const startTime = prompt('Heure de début (HH:MM) :');
+        const duration = prompt('Durée en minutes :');
+        const topic = prompt('Sujet :');
+
+        if (subject && date && startTime && duration && topic) {
+            showNotification(`Session programmée : ${subject} le ${date} à ${startTime}`);
+        }
+    }
+
+    // Spaced Repetition
+    function reviewCards() {
+        showNotification('Ouverture du système de cartes de révision espacées');
+    }
+
+    function addNewCard() {
+        const question = prompt('Question :');
+        const answer = prompt('Réponse :');
+
+        if (question && answer) {
+            showNotification('Nouvelle carte ajoutée au système de révision espacée');
+        }
+    }
+
+    // Gestion des Pauses Actives
+    function setBreakDuration(minutes) {
+        // Mettre à jour l'interface
+        const breakBtns = document.querySelectorAll('.break-btn');
+        breakBtns.forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.background = 'var(--bg-secondary)';
+            btn.style.borderColor = 'var(--border-light)';
+            btn.style.color = 'var(--text-primary)';
+        });
+
+        event.target.classList.add('active');
+        event.target.style.background = 'var(--accent)';
+        event.target.style.borderColor = 'var(--accent)';
+        event.target.style.color = 'white';
+
+        localStorage.setItem('preferredBreakDuration', minutes);
+        showNotification(`Durée de pause définie à ${minutes} minutes`);
+    }
+
+    function startBreakNow() {
+        showNotification('Pause active démarrée ! Pense à bien t\'étirer et bouger.');
+    }
+
+    // Focus Modes
+    function activateFocusMode(mode) {
+        const modes = {
+            deep: {
+                name: 'Focus Profond',
+                duration: 120,
+                features: ['Mode sombre', 'Blocage distractions', 'Musique concentration']
+            },
+            creative: {
+                name: 'Créativité',
+                duration: 90,
+                features: ['Musique douce', 'Fond d\'écran inspirant', 'Notes rapides']
+            },
+            review: {
+                name: 'Révision Active',
+                duration: 45,
+                features: ['Rappels activés', 'Quiz intégré', 'Suivi progression']
+            },
+            quick: {
+                name: 'Session Rapide',
+                duration: 25,
+                features: ['Pomodoro express', 'Objectifs clairs', 'Feedback immédiat']
+            }
+        };
+
+        if (modes[mode]) {
+            const modeData = modes[mode];
+            showNotification(`🚀 Mode "${modeData.name}" activé pour ${modeData.duration} minutes !`);
+            // Ici on pourrait changer l'interface, activer des fonctionnalités spécifiques, etc.
+        }
+    }
+
+    // Time Blocking
+    function createTimeBlock() {
+        const activity = prompt('Activité :');
+        const startTime = prompt('Heure de début (HH:MM) :');
+        const duration = prompt('Durée en minutes :');
+
+        if (activity && startTime && duration) {
+            showNotification(`Bloc de temps créé : ${activity} à ${startTime} (${duration}min)`);
+        }
+    }
+
+    // Alertes de Fatigue
+    function takeImmediateBreak() {
+        showNotification('Pause immédiate activée ! Lève-toi, bouge et hydrate-toi.');
+    }
+
+    function viewFatigueHistory() {
+        const history = `
+📊 Historique de Fatigue
+
+📅 Aujourd'hui :
+• 09:00 - 11:00 : Concentration 92%
+• 11:00 - 11:15 : Pause active
+• 11:15 - 12:45 : Concentration 87%
+• 14:00 - 15:30 : Concentration 78% ⚠️ Fatigue détectée
+
+📈 Tendances :
+• Meilleure période : 09:00 - 12:00
+• Pics de fatigue : 14:00 - 16:00
+• Récupération moyenne : 15min
+
+💡 Recommandations :
+• Planifier les tâches complexes le matin
+• Faire des pauses de 10-15min toutes les 2h
+• Bien s'hydrater et bouger régulièrement
+        `;
+        alert(history);
+    }
+
+    function configureAlerts() {
+        showNotification('Configuration des alertes de fatigue - Fonctionnalité à développer');
+    }
+
+    // Optimisation du Rythme
+    function applyOptimalRhythm() {
+        showNotification('Rythme optimal appliqué ! 45min travail + 10min pause + 5min révision');
+    }
+
+    function customizeRhythm() {
+        const workTime = prompt('Temps de travail (minutes) :', '45');
+        const breakTime = prompt('Temps de pause (minutes) :', '10');
+        const reviewTime = prompt('Temps de révision (minutes) :', '5');
+
+        if (workTime && breakTime && reviewTime) {
+            showNotification(`Rythme personnalisé : ${workTime}min travail + ${breakTime}min pause + ${reviewTime}min révision`);
+        }
+    }
+
+    // Initialisation du module Time Management
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialiser le timer Pomodoro
+        updatePomodoroDisplay();
+        updatePomodoroStatus();
+
+        // Charger les préférences sauvegardées
+        const savedBreakDuration = localStorage.getItem('preferredBreakDuration');
+        if (savedBreakDuration) {
+            // Simuler la sélection du bouton approprié
+            const breakBtns = document.querySelectorAll('.break-btn');
+            breakBtns.forEach(btn => {
+                if (btn.textContent.includes(savedBreakDuration)) {
+                    setBreakDuration(savedBreakDuration);
+                }
+            });
+        }
+    });
 
     </script>
 </body>
