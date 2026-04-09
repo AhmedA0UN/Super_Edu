@@ -634,8 +634,8 @@
                     <div class="right-sidebar">
                         <div class="widget ai-widget"><div class="ai-header"><div class="ai-avatar"><i class="fas fa-robot"></i></div><div><h3 style="color:white;margin-bottom:6px;">SuperBot IA</h3><div class="ai-status"><span class="ai-status-dot"></span><span style="color:var(--accent-light);font-size:12px;">En ligne · Prêt à aider</span></div></div></div><div class="ai-message-box"><div class="ai-message"><i class="fas fa-graduation-cap" style="color:var(--accent);margin-right:8px;"></i>Bonjour Sarah ! Je vois que tu progresses bien sur les Design Patterns. Veux-tu que je t'explique le Pattern Observer ?</div><div class="ai-suggestions"><span class="ai-suggestion-chip" onclick="showNotification('SuperBot explique le Pattern Observer...')"><i class="fas fa-question"></i> Explique Observer</span><span class="ai-suggestion-chip" onclick="showNotification('Génération de fiche de révision...')"><i class="fas fa-file"></i> Fiche Révision</span><span class="ai-suggestion-chip" onclick="showNotification('Analyse de code en cours...')"><i class="fas fa-code"></i> Debug Code</span><span class="ai-suggestion-chip" onclick="showNotification('Création de quiz personnalisé...')">
                                         <i class="fas fa-question-circle"></i> Quiz
-                                    </span><span class="ai-suggestion-chip" onclick="showNotification('Ouverture du menu d\'autres options plus avancées...')">
-                                        <i class="fas fa-ellipsis-h"></i> Avancé
+                                    </span><span class="ai-suggestion-chip" onclick="showNotification('Ouverture du menu d\'autres options plus avancées ...')">
+                                        <i class="fas fa-ellipsis-h"></i> Autre
                                     </span></div></div><div class="ai-input"><input type="text" placeholder="Pose ta question à SuperBot..." id="aiInput"><button onclick="startVoiceInput()"><i class="fas fa-microphone"></i></button><button onclick="sendAIMessage()"><i class="fas fa-paper-plane"></i></button></div></div>
                         <div class="widget"><div class="widget-title"><i class="fas fa-users"></i><span>Espaces Collaboration</span></div><div class="collab-list"><div class="collab-room"><div class="room-info"><div class="room-icon"><i class="fas fa-laptop-code"></i></div><div class="room-details"><h4>Projet Architecture Logicielle</h4><p>8 étudiants · Dr. Ben Ali</p></div></div><div class="online-indicator"><span class="online-dot"></span><span style="font-size:12px;color:var(--text-muted);">4</span></div><button class="join-btn" onclick="showNotification('Rejoindre la session...')">Rejoindre</button></div><div class="collab-room"><div class="room-info"><div class="room-icon"><i class="fas fa-chart-bar"></i></div><div class="room-details"><h4>Révision Macroéconomie</h4><p>12 étudiants · Pr. Mansour</p></div></div><div class="online-indicator"><span class="online-dot"></span><span style="font-size:12px;color:var(--text-muted);">7</span></div><button class="join-btn" onclick="showNotification('Rejoindre la session...')">Rejoindre</button></div></div><button class="btn-primary" style="width:100%;margin-top:16px;" onclick="showNotification('Création d\'un nouvel espace...')"><i class="fas fa-plus"></i> Créer un espace</button></div>
                         <div class="widget"><div class="widget-title"><i class="fas fa-hand-holding-heart"></i><span>Espace Bien-être & Psy</span></div><div class="psy-session"><div class="psy-avatar"><i class="fas fa-user-md"></i></div><div class="psy-details"><h4>Dr. Amel Driss</h4><p>Psychologue clinicienne</p><p style="margin-top:8px;"><i class="far fa-clock"></i> Prochain créneau : 16h</p></div></div><div class="psy-session" style="background:linear-gradient(135deg,#e0e7ff,#c7d2fe);border-color:#a5b4fc;"><div class="psy-avatar" style="background:linear-gradient(135deg,#6366f1,#818cf8);"><i class="fas fa-users"></i></div><div class="psy-details"><h4>Groupe de Parole</h4><p style="color:#3730a3;">Gestion du stress des examens</p><p style="margin-top:8px;"><i class="far fa-calendar"></i> Mercredi 18h · 6 participants</p></div></div><button class="book-session-btn" onclick="showNotification('Réservation d\'une séance...')"><i class="far fa-calendar-check"></i> Réserver une séance</button></div>
@@ -835,6 +835,7 @@
                     <button class="tab-module-btn" data-module="simulation">🚀 Simulation parcours</button>
                     <button class="tab-module-btn" data-module="mentor">🤖 Mentor IA</button>
                     <button class="tab-module-btn" data-module="level">🎮 Level-Based Learning</button>
+                    <button class="tab-module-btn" data-module="motivation">🎯 Motivation</button>
                 </div>
 
                 <div id="module-lacunes" class="module-tab-content active">
@@ -923,6 +924,121 @@
                         </div>
                     </div>
                     <div id="levelsContainer"></div>
+                </div>
+
+                <!-- Module 6 : Motivation -->
+                <div id="module-motivation" class="module-tab-content">
+                    <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); border-radius: 24px; padding: 24px; margin-bottom: 24px; color: white;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                            <div><i class="fas fa-bullseye" style="font-size: 42px; color: #fbbf24;"></i></div>
+                            <div>
+                                <h2 style="font-size: 28px; margin:0;">Centre de Motivation</h2>
+                                <p style="margin:4px 0 0;">Fixe tes objectifs, suis tes progrès, reste motivé !</p>
+                            </div>
+                            <div><span class="badge" style="background: #fbbf24; color: #1e40af;">Motivation: <span id="motivationScore">85</span>%</span></div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                        <!-- Objectifs personnels -->
+                        <div class="result-card">
+                            <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-target"></i> Mes Objectifs</h3>
+                            <div id="goalsList" style="margin-bottom: 16px;">
+                                <div class="goal-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 8px;">
+                                    <span>Terminer le chapitre d'algorithmes</span>
+                                    <span class="badge" style="background: #10b981;">En cours</span>
+                                </div>
+                                <div class="goal-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 8px;">
+                                    <span>Obtenir 15/20 au prochain contrôle</span>
+                                    <span class="badge" style="background: #f59e0b;">Planifié</span>
+                                </div>
+                            </div>
+                            <button class="btn-primary" onclick="addNewGoal()" style="width: 100%;"><i class="fas fa-plus"></i> Ajouter un objectif</button>
+                        </div>
+
+                        <!-- Progression quotidienne -->
+                        <div class="result-card">
+                            <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-chart-line"></i> Progression Quotidienne</h3>
+                            <div style="margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>Étude aujourd'hui</span>
+                                    <span>2h 30min</span>
+                                </div>
+                                <div style="background: var(--bg-secondary); border-radius: 20px; height: 8px; overflow: hidden;">
+                                    <div style="background: var(--accent); height: 100%; width: 75%; border-radius: 20px;"></div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 16px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span>Objectifs atteints</span>
+                                    <span>3/5</span>
+                                </div>
+                                <div style="background: var(--bg-secondary); border-radius: 20px; height: 8px; overflow: hidden;">
+                                    <div style="background: #10b981; height: 100%; width: 60%; border-radius: 20px;"></div>
+                                </div>
+                            </div>
+                            <div class="streak-display" style="text-align: center; padding: 16px; background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px;">
+                                <div style="font-size: 24px; font-weight: bold; color: #92400e;">🔥 7 jours</div>
+                                <div style="font-size: 14px; color: #92400e;">Série d'étude active</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <!-- Citation motivante -->
+                        <div class="result-card">
+                            <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-quote-left"></i> Citation du Jour</h3>
+                            <blockquote style="font-style: italic; font-size: 16px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 16px; padding: 16px; background: var(--bg-secondary); border-radius: 12px; border-left: 4px solid var(--accent);">
+                                "Le succès n'est pas final, l'échec n'est pas fatal : c'est le courage de continuer qui compte."
+                            </blockquote>
+                            <div style="text-align: right; font-weight: 600; color: var(--text-secondary);">- Winston Churchill</div>
+                            <button class="btn-outline" onclick="getNewQuote()" style="width: 100%; margin-top: 16px;"><i class="fas fa-refresh"></i> Nouvelle citation</button>
+                        </div>
+
+                        <!-- Badges et Récompenses -->
+                        <div class="result-card">
+                            <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-trophy"></i> Mes Badges</h3>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                                <div class="badge-item" style="display: flex; flex-direction: column; align-items: center; padding: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); border-radius: 12px; color: white; min-width: 80px;">
+                                    <div style="font-size: 24px;">📚</div>
+                                    <div style="font-size: 12px; text-align: center;">Lecteur</div>
+                                </div>
+                                <div class="badge-item" style="display: flex; flex-direction: column; align-items: center; padding: 12px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 12px; color: white; min-width: 80px;">
+                                    <div style="font-size: 24px;">🎯</div>
+                                    <div style="font-size: 12px; text-align: center;">Objectif</div>
+                                </div>
+                                <div class="badge-item" style="display: flex; flex-direction: column; align-items: center; padding: 12px; background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-radius: 12px; color: white; min-width: 80px;">
+                                    <div style="font-size: 24px;">🔥</div>
+                                    <div style="font-size: 12px; text-align: center;">Série</div>
+                                </div>
+                                <div class="badge-item" style="display: flex; flex-direction: column; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 12px; color: var(--text-secondary); min-width: 80px; opacity: 0.5;">
+                                    <div style="font-size: 24px;">🏆</div>
+                                    <div style="font-size: 12px; text-align: center;">Champion</div>
+                                </div>
+                            </div>
+                            <div style="margin-top: 16px; text-align: center;">
+                                <span style="font-size: 14px; color: var(--text-secondary);">Prochain badge dans 2 jours</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Challenge quotidien -->
+                    <div class="result-card" style="margin-top: 24px;">
+                        <h3 style="margin-bottom: 16px; color: var(--primary);"><i class="fas fa-star"></i> Challenge Quotidien</h3>
+                        <div style="background: linear-gradient(135deg, #ec4899, #f97316); color: white; padding: 20px; border-radius: 16px;">
+                            <h4 style="margin: 0 0 8px 0; font-size: 18px;">Résoudre 5 exercices de maths en 30 minutes</h4>
+                            <p style="margin: 0 0 16px 0; opacity: 0.9;">Défie-toi et améliore tes compétences en résolution rapide !</p>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <div style="flex: 1;">
+                                    <div style="background: rgba(255,255,255,0.2); border-radius: 20px; height: 8px; overflow: hidden;">
+                                        <div style="background: white; height: 100%; width: 40%; border-radius: 20px;"></div>
+                                    </div>
+                                    <div style="font-size: 12px; margin-top: 4px;">2/5 exercices terminés</div>
+                                </div>
+                                <button class="btn-secondary" style="background: white; color: #ec4899; border: none;">Continuer</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1325,7 +1441,64 @@
 
     function showNotif(msg) { showNotification(msg); }
     document.querySelectorAll('.video-card').forEach(c => c.addEventListener('click', () => showNotif('Lecture vidéo')));
-    
+
+    // Fonctions du module Motivation
+    const motivationQuotes = [
+        { quote: "Le succès n'est pas final, l'échec n'est pas fatal : c'est le courage de continuer qui compte.", author: "Winston Churchill" },
+        { quote: "La seule façon d'atteindre l'impossible est de croire qu'il est possible.", author: "Charles Kingsleigh" },
+        { quote: "L'avenir appartient à ceux qui croient à la beauté de leurs rêves.", author: "Eleanor Roosevelt" },
+        { quote: "Le talent gagne des matchs, mais c'est le travail d'équipe et l'intelligence qui gagnent des championnats.", author: "Michael Jordan" },
+        { quote: "La motivation vous fait commencer. L'habitude vous fait continuer.", author: "Jim Ryun" },
+        { quote: "Ne rêvez pas votre vie, vivez vos rêves.", author: "Proverbe inconnu" },
+        { quote: "Le succès est la somme de petits efforts répétés jour après jour.", author: "Robert Collier" },
+        { quote: "La différence entre le possible et l'impossible réside dans la détermination d'une personne.", author: "Tommy Lasorda" }
+    ];
+
+    function addNewGoal() {
+        const goalText = prompt("Entrez votre nouvel objectif :");
+        if (goalText && goalText.trim()) {
+            const goalsList = document.getElementById('goalsList');
+            const newGoal = document.createElement('div');
+            newGoal.className = 'goal-item';
+            newGoal.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg-secondary); border-radius: 12px; margin-bottom: 8px;';
+            newGoal.innerHTML = `
+                <span>${goalText.trim()}</span>
+                <span class="badge" style="background: #f59e0b;">Nouveau</span>
+            `;
+            goalsList.appendChild(newGoal);
+            showNotification('Nouvel objectif ajouté !');
+        }
+    }
+
+    function getNewQuote() {
+        const randomQuote = motivationQuotes[Math.floor(Math.random() * motivationQuotes.length)];
+        const quoteElement = document.querySelector('#module-motivation blockquote');
+        const authorElement = document.querySelector('#module-motivation blockquote + div');
+
+        quoteElement.textContent = `"${randomQuote.quote}"`;
+        authorElement.textContent = `- ${randomQuote.author}`;
+
+        // Animation de transition
+        quoteElement.style.opacity = '0';
+        authorElement.style.opacity = '0';
+
+        setTimeout(() => {
+            quoteElement.style.transition = 'opacity 0.5s ease';
+            authorElement.style.transition = 'opacity 0.5s ease';
+            quoteElement.style.opacity = '1';
+            authorElement.style.opacity = '1';
+        }, 100);
+    }
+
+    // Initialiser une citation aléatoire au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        // Les autres initialisations sont déjà là
+        // Ajouter l'initialisation de la citation motivationnelle
+        if (document.getElementById('module-motivation')) {
+            getNewQuote();
+        }
+    });
+
     </script>
 </body>
 </html>
