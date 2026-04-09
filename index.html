@@ -877,6 +877,7 @@
                             <select id="simATS"><option>CV ATS-friendly</option><option>Match compétences</option><option>Préparation entretien</option><option>Certifications recherchées</option><option>Analyse marché</option></select>
                             <select id="simCVFocus"><option>Résumé ATS</option><option>Portfolio</option><option>Lettre de motivation</option><option>Profil LinkedIn</option><option>Mots-clés métier</option></select>
                             <select id="simCVTemplate"><option>Standard</option><option>Créatif</option><option>Professionnel</option><option>ATS</option></select>
+                            <select id="simCVEvalMode"><option>Résumé</option><option>Diagrammes</option><option>Recommandations modernisées</option></select>
                             <input id="simIndustry" type="text" placeholder="Secteur ou entreprise cible" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
                             <input id="simHours" type="number" min="1" max="40" placeholder="Heures / semaine" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
                             <button id="simulateBtnModule" class="btn-primary">Simuler mon parcours</button>
@@ -2441,6 +2442,36 @@
         const cvTemplate = document.getElementById('simCVTemplate').value;
         const templateDescription = cvTemplates[cvTemplate];
         const cvFileName = document.getElementById('simCVFileName').textContent || '';
+        const evalMode = document.getElementById('simCVEvalMode').value;
+
+        const graphHtml = evalMode === 'Diagrammes' ? `
+            <div style="display:grid; gap:16px;">
+                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between;">
+                    <div style="flex:1; min-width:160px; background:#ffffff; border-radius:20px; padding:16px; border:1px solid rgba(15,23,42,0.08);">
+                        <div style="font-weight:700; margin-bottom:12px;">Analyse ATS</div>
+                        <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:85%; height:100%; background:#2563eb;"></div></div>
+                        <p style="margin:10px 0 0; color:var(--text-secondary);">85% d'adaptation ATS simulée.</p>
+                    </div>
+                    <div style="flex:1; min-width:160px; background:#ffffff; border-radius:20px; padding:16px; border:1px solid rgba(15,23,42,0.08);">
+                        <div style="font-weight:700; margin-bottom:12px;">Structure</div>
+                        <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:72%; height:100%; background:#10b981;"></div></div>
+                        <p style="margin:10px 0 0; color:var(--text-secondary);">72% de clarté structurelle.</p>
+                    </div>
+                </div>
+                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between;">
+                    <div style="flex:1; min-width:160px; background:#ffffff; border-radius:20px; padding:16px; border:1px solid rgba(15,23,42,0.08);">
+                        <div style="font-weight:700; margin-bottom:12px;">Mots-clés métier</div>
+                        <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:90%; height:100%; background:#f59e0b;"></div></div>
+                        <p style="margin:10px 0 0; color:var(--text-secondary);">90% de correspondance par mots-clés.</p>
+                    </div>
+                    <div style="flex:1; min-width:160px; background:#ffffff; border-radius:20px; padding:16px; border:1px solid rgba(15,23,42,0.08);">
+                        <div style="font-weight:700; margin-bottom:12px;">Design</div>
+                        <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:68%; height:100%; background:#8b5cf6;"></div></div>
+                        <p style="margin:10px 0 0; color:var(--text-secondary);">68% de modernité visuelle.</p>
+                    </div>
+                </div>
+            </div>
+        ` : '';
 
         resDiv.innerHTML = `
             <h4>🔮 Parcours suggéré</h4>
@@ -2478,6 +2509,28 @@
                 <p style="margin:10px 0 0; color: var(--text-secondary);"><strong>Modèle CV :</strong> ${cvTemplate} — ${templateDescription}</p>
                 ${cvFileName ? `<p style="margin:10px 0 0; color: var(--text-secondary);"><strong>Fichier PDF chargé :</strong> ${cvFileName}</p>` : ''}
             </div>
+            ${evalMode === 'Diagrammes' ? `
+                <div style="margin-top:16px; padding:18px; border-radius:18px; background: #f8fafc; border:1px solid rgba(59,130,246,0.18);">
+                    <div style="font-weight:600; margin-bottom:10px;">Visualisation des scores</div>
+                    ${graphHtml}
+                </div>
+            ` : evalMode === 'Recommandations modernisées' ? `
+                <div style="margin-top:16px; display:grid; gap:16px;">
+                    <div style="background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px; padding:18px;">
+                        <div style="font-weight:700; margin-bottom:12px;">Modernise ton CV</div>
+                        <ul style="margin:0; padding-left:20px; color: var(--text-secondary);">
+                            <li>Mets en avant des résultats quantifiables (+ impact immédiat).</li>
+                            <li>Utilise une section « Compétences clés » claire et parcourable.</li>
+                            <li>Privilégie un style ATS-friendly pour les recrutements numériques.</li>
+                            <li>Ajoute des liens vers projets, GitHub ou portfolio en ligne.</li>
+                        </ul>
+                    </div>
+                    <div style="background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px; padding:18px;">
+                        <div style="font-weight:700; margin-bottom:12px;">Conseil UX</div>
+                        <p style="margin:0; color: var(--text-secondary);">Structure ton CV avec un en-tête net, des sections distinctes, et un espacement suffisant pour une lecture rapide.</p>
+                    </div>
+                </div>
+            ` : ''}
         `;
         resDiv.style.display = 'block';
     });
@@ -2504,6 +2557,7 @@
             return;
         }
         const cvFileName = document.getElementById('simCVFile').files[0]?.name || '';
+        const evalMode = document.getElementById('simCVEvalMode').value;
         const keywords = ['skills', 'compétences', 'expérience', 'projet', 'formation', 'certification', 'CV', 'résumé', 'ATS', 'résultats', 'gestion', 'leadership'];
         const score = Math.min(100, Math.max(20, Math.round((keywords.reduce((count, word) => count + (cvText.toLowerCase().includes(word) ? 1 : 0), 0) / keywords.length) * 100)));
         const missing = keywords.filter(word => !cvText.toLowerCase().includes(word));
@@ -2511,6 +2565,56 @@
             ? 'Excellent CV : il inclut les éléments essentiels attendus par un recruteur et un ATS.'
             : `Améliore le CV en ajoutant : ${missing.slice(0, 4).join(', ')}${missing.length > 4 ? ', ...' : ''}.`;
         const fileNote = cvFileName ? `\nPDF détecté : ${cvFileName}. Assure-toi que le fichier est bien lisible et compatible.` : '\nAucun PDF joint. Tu peux ajouter ton CV en PDF pour un meilleur suivi.';
+
+        const chartSection = evalMode === 'Diagrammes'
+            ? `
+                <div style="display:grid; gap:16px; margin-top:16px;">
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between;">
+                        <div style="flex:1; min-width:150px; padding:16px; background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px;">
+                            <div style="font-weight:700; margin-bottom:10px;">Score ATS</div>
+                            <div style="font-size:32px; font-weight:800; color:#2563eb;">${score}%</div>
+                            <div style="margin-top:12px; height:12px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:${score}%; height:100%; background:#2563eb;"></div></div>
+                        </div>
+                        <div style="flex:1; min-width:150px; padding:16px; background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px;">
+                            <div style="font-weight:700; margin-bottom:10px;">Structure</div>
+                            <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:72%; height:100%; background:#10b981;"></div></div>
+                            <p style="margin:10px 0 0; color:var(--text-secondary);">72% de lisibilité et découpage clair.</p>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between;">
+                        <div style="flex:1; min-width:150px; padding:16px; background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px;">
+                            <div style="font-weight:700; margin-bottom:10px;">Mots-clés</div>
+                            <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:${Math.min(100, missing.length > 0 ? 100 - (missing.length * 8) : 100)}%; height:100%; background:#f59e0b;"></div></div>
+                            <p style="margin:10px 0 0; color:var(--text-secondary);">Correspondance avec les mots-clés métier.</p>
+                        </div>
+                        <div style="flex:1; min-width:150px; padding:16px; background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px;">
+                            <div style="font-weight:700; margin-bottom:10px;">Design moderne</div>
+                            <div style="height:10px; background:#e2e8f0; border-radius:999px; overflow:hidden;"><div style="width:68%; height:100%; background:#8b5cf6;"></div></div>
+                            <p style="margin:10px 0 0; color:var(--text-secondary);">Estimation de l’apparence professionnelle.</p>
+                        </div>
+                    </div>
+                </div>
+            `
+            : evalMode === 'Recommandations modernisées'
+                ? `
+                    <div style="display:grid; gap:16px; margin-top:16px;">
+                        <div style="background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px; padding:18px;">
+                            <div style="font-weight:700; margin-bottom:12px;">Une version plus moderne de ton CV</div>
+                            <ul style="margin:0; padding-left:20px; color: var(--text-secondary);">
+                                <li>Mets en avant des réalisations mesurables sur les premières lignes.</li>
+                                <li>Ajoute un encadré compétences pour aider le recruteur à scanner rapidement.</li>
+                                <li>Utilise un format simple compatible ATS avec des titres de section standard.</li>
+                                <li>Insère un lien vers ton portfolio en ligne si tu en as un.</li>
+                            </ul>
+                        </div>
+                        <div style="background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:20px; padding:18px;">
+                            <div style="font-weight:700; margin-bottom:12px;">Optimisation technique</div>
+                            <p style="margin:0; color: var(--text-secondary);">Vérifie que ton PDF est enregistré en texte sélectionnable et que les titres sont bien visibles pour les systèmes ATS.</p>
+                        </div>
+                    </div>
+                `
+                : '';
+
         const resultHtml = `
             <div style="display:grid; gap:16px;">
                 <div style="display:flex; align-items:center; justify-content:space-between; padding:16px; background: #eef6ff; border-radius: 20px; border: 1px solid rgba(59,130,246,0.18);">
@@ -2528,6 +2632,7 @@
                     <div style="font-weight:700; margin-bottom:10px;">Fichier PDF</div>
                     <p style="margin:0; color: var(--text-secondary);">${fileNote}</p>
                 </div>
+                ${chartSection}
             </div>
         `;
         showModal('Évaluation de ton CV', resultHtml);
