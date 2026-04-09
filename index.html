@@ -868,9 +868,15 @@
                 <div id="module-simulation" class="module-tab-content">
                     <div class="simulation-panel">
                         <div class="simulate-form">
-                            <p class="form-instruction">Choisis ton domaine et ta compétence clé pour générer un parcours guidé, avec étapes recommandées et objectifs de croissance.</p>
+                            <p class="form-instruction">Choisis ton domaine, ton niveau, ton objectif et ta disponibilité pour générer un parcours guidé détaillé.</p>
                             <select id="simDomain"><option>Informatique & IA</option><option>Ingénierie</option><option>Gestion & Finance</option></select>
-                            <select id="simSkill"><option>Analyse de données</option><option>Programmation</option><option>Communication</option></select>
+                            <select id="simSkill"><option>Analyse de données</option><option>Programmation</option><option>Communication</option><option>Leadership</option><option>Gestion de projet</option></select>
+                            <select id="simLevel"><option>Débutant</option><option>Intermédiaire</option><option>Avancé</option></select>
+                            <select id="simGoal"><option>Emploi</option><option>Création d'entreprise</option><option>Poursuite d'études</option></select>
+                            <select id="simFormat"><option>Parcours progressif</option><option>Bootcamp intensif</option><option>Projet réel</option></select>
+                            <select id="simATS"><option>CV ATS-friendly</option><option>Match compétences</option><option>Préparation entretien</option><option>Certifications recherchées</option><option>Analyse marché</option></select>
+                            <input id="simIndustry" type="text" placeholder="Secteur ou entreprise cible" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
+                            <input id="simHours" type="number" min="1" max="40" placeholder="Heures / semaine" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
                             <button id="simulateBtnModule" class="btn-primary">Simuler mon parcours</button>
                         </div>
                         <div class="simulation-benefits">
@@ -889,8 +895,8 @@
                                     <p>Reçois des recommandations adaptées à ton profil, ton domaine et ton niveau actuel.</p>
                                 </div>
                                 <div class="benefit-card">
-                                    <h5>Passerelle employabilité</h5>
-                                    <p>Découvre les compétences demandées et les options de certification qui valorisent ton CV.</p>
+                                    <h5>Plan d'action détaillé</h5>
+                                    <p>Obtiens une feuille de route avec étapes, durées, ressources et jalons.</p>
                                 </div>
                             </div>
                         </div>
@@ -2327,32 +2333,103 @@
     document.getElementById('simulateBtnModule').addEventListener('click', () => {
         const domain = document.getElementById('simDomain').value;
         const skill = document.getElementById('simSkill').value;
+        const level = document.getElementById('simLevel').value;
+        const goal = document.getElementById('simGoal').value;
+        const format = document.getElementById('simFormat').value;
+        const atsOption = document.getElementById('simATS').value;
+        const industry = document.getElementById('simIndustry').value || 'secteur cible';
+        const hours = parseInt(document.getElementById('simHours').value, 10) || 8;
         const resDiv = document.getElementById('simResultModule');
+
         const jobs = {
             'Informatique & IA': 'Data Scientist',
             'Ingénierie': 'Ingénieur R&D',
             'Gestion & Finance': 'Analyste financier'
         };
         const job = jobs[domain] || 'Spécialiste de carrière';
-        const benefits = domain === 'Informatique & IA'
-            ? ['Feuille de route data et IA', 'Prochaines certifications recommandées', 'Ressources de projet pratique']
-            : domain === 'Ingénierie'
-            ? ['Plan de montée en compétences technique', 'Outils métiers adaptés', 'Accompagnement projet']
-            : ['Stratégie de valeur ajoutée', 'Compétences recherchées par les recruteurs', 'Exemples de cas concrets'];
+
+        const timelines = {
+            'Débutant': ['3-4 mois', '6-8 mois', '9-12 mois'],
+            'Intermédiaire': ['2-3 mois', '4-6 mois', '7-9 mois'],
+            'Avancé': ['1-2 mois', '3-4 mois', '5-7 mois']
+        };
+        const timeline = hours >= 20 ? timelines[level][0] : hours >= 10 ? timelines[level][1] : timelines[level][2];
+
+        const resources = {
+            'Informatique & IA': ['Micro-certifications IA', 'Projets GitHub', 'Cours Python avancé'],
+            'Ingénierie': ['Études de cas techniques', 'Simulation CAO', 'Projet d’ingénierie pratique'],
+            'Gestion & Finance': ['Analyse de marché', 'Tableaux financiers', 'Certifications Excel/Finance']
+        };
+
+        const goals = {
+            'Emploi': 'Cible un rôle concret immédiatement en adaptant ton CV et ton portfolio.',
+            'Création d\'entreprise': 'Prépare un MVP et valide ton idée avec un pilote opérationnel.',
+            'Poursuite d\'études': 'Construis un dossier solide avec des preuves de compétence et des projets réels.'
+        };
+
+        const steps = {
+            'Informatique & IA': [
+                `1. Renforce les bases en ${skill} et ${domain.includes('IA') ? 'mathématiques appliquées' : 'outils techniques'}.`,
+                '2. Crée un projet réel intégrant données, visualisation et modèles.',
+                '3. Partage ton travail sur GitHub et prépare des démonstrations concrètes.'
+            ],
+            'Ingénierie': [
+                `1. Approfondis ${skill} avec un projet terrain ou une étude technique.`,
+                '2. Maîtrise les outils professionnels et les normes du secteur.',
+                '3. Prépare une présentation de projet ou un prototype opérationnel.'
+            ],
+            'Gestion & Finance': [
+                `1. Développe tes compétences sur ${skill} et les analyses chiffrées.`,
+                '2. Réalise un cas pratique ou une étude de marché.',
+                '3. Construis un dossier de recommandations ou un business plan court.'
+            ]
+        };
+
+        const planFormats = {
+            'Parcours progressif': 'Nous recommandons une montée en compétences régulière avec des étapes hebdomadaires claires.',
+            'Bootcamp intensif': 'Tu feras un effort concentré sur une période courte pour accélérer ta progression.',
+            'Projet réel': 'Ton plan est centré sur l’apprentissage par réalisation de cas concrets et de livrables.'
+        };
+
+        const atsTips = {
+            'CV ATS-friendly': 'Optimise ton CV pour les mots-clés du secteur et les formats compatibles ATS.',
+            'Match compétences': 'Sélectionne les compétences exactes demandées et fais correspondre ton profil aux offres.',
+            'Préparation entretien': 'Anticipe les questions techniques et comportementales du métier visé.',
+            'Certifications recherchées': 'Choisis les certifications validées par les recruteurs du secteur.',
+            'Analyse marché': 'Évalue la demande actuelle pour ton profil dans le secteur ciblé.'
+        };
+
+        const strength = level === 'Avancé' ? 'forte' : level === 'Intermédiaire' ? 'bonne' : 'naissante';
 
         resDiv.innerHTML = `
             <h4>🔮 Parcours suggéré</h4>
-            <p><strong>Métier :</strong> ${job}</p>
+            <p><strong>Métier cible :</strong> ${job}</p>
             <p><strong>Compétence clé :</strong> ${skill}</p>
-            <div style="margin-top:16px;">
-                <strong>Bénéfices attendus :</strong>
-                <ul style="margin-top:10px; padding-left:20px; color: var(--text-secondary);">
-                    ${benefits.map(item => `<li style="margin-bottom:8px;">${item}</li>`).join('')}
-                </ul>
+            <p><strong>Niveau actuel :</strong> ${level}</p>
+            <p><strong>Objectif :</strong> ${goal}</p>
+            <p><strong>Format choisi :</strong> ${format}</p>
+            <p><strong>Disponibilité :</strong> ${hours}h / semaine</p>
+            <div style="margin-top:16px; padding:18px; border-radius:18px; background: #f8fbff; border:1px solid rgba(56,189,248,0.18);">
+                <div style="font-weight:600; margin-bottom:10px;">Rythme recommandé :</div>
+                <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                    <span><strong>Durée estimée :</strong> ${timeline}</span>
+                    <span><strong>Force actuelle :</strong> ${strength}</span>
+                    <span><strong>Style :</strong> ${planFormats[format]}</span>
+                </div>
             </div>
-            <div style="margin-top:16px; padding:16px; border-radius:18px; background:#ffffff; border:1px solid rgba(56,189,248,0.18);">
-                <strong>Prochaines actions :</strong>
-                <p style="margin:10px 0 0;">Suivre des modules ciblés, valider une mini-certification et préparer une présentation de projet.</p>
+            <div style="margin-top:16px;"><strong>Étapes clés :</strong><ul style="margin-top:10px; padding-left:20px; color: var(--text-secondary);">${steps[domain].map(step => `<li style="margin-bottom:8px;">${step}</li>`).join('')}</ul></div>
+            <div style="margin-top:16px; padding:18px; border-radius:18px; background: #ffffff; border:1px solid rgba(16,185,129,0.18);">
+                <div style="font-weight:600; margin-bottom:10px;">Action prioritaire :</div>
+                <p style="margin:0;">${goals[goal]}</p>
+            </div>
+            <div style="margin-top:16px; padding:18px; border-radius:18px; background: #f0fdf4; border:1px solid rgba(16,185,129,0.18);">
+                <div style="font-weight:600; margin-bottom:10px;">Ressources recommandées :</div>
+                <ul style="margin-top:10px; padding-left:20px; color: var(--text-secondary);">${resources[domain].map(item => `<li style="margin-bottom:8px;">${item}</li>`).join('')}</ul>
+            </div>
+            <div style="margin-top:16px; padding:18px; border-radius:18px; background: #eff6ff; border:1px solid rgba(59,130,246,0.18);">
+                <div style="font-weight:600; margin-bottom:10px;">Option ATS sélectionnée :</div>
+                <p style="margin:0;">${atsOption} — ${atsTips[atsOption]}</p>
+                <p style="margin:12px 0 0; color: var(--text-secondary);">Cible : ${industry}</p>
             </div>
         `;
         resDiv.style.display = 'block';
