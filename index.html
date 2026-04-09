@@ -853,6 +853,82 @@
                         </select>
                         <span class="badge" style="font-size:13px; padding:8px 14px;">Quiz personnalisé</span>
                     </div>
+
+                    <!-- Configuration Quiz Personnalisé -->
+                    <div id="customQuizConfig" style="background:#f8fafc; border-radius:20px; padding:20px; margin-bottom:20px; border:1px solid rgba(59,130,246,0.18);">
+                        <h4 style="margin-bottom:16px; color:#1e293b;">🎯 Configure ton Quiz Personnalisé</h4>
+                        <div style="display:grid; gap:16px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600; color:#374151;">Nombre de questions</label>
+                                <select id="quizQuestionsCount" style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--border-light);">
+                                    <option>5 questions</option>
+                                    <option>10 questions</option>
+                                    <option>15 questions</option>
+                                    <option>20 questions</option>
+                                    <option>25 questions</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600; color:#374151;">Niveau de difficulté</label>
+                                <select id="quizDifficulty" style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--border-light);">
+                                    <option>Débutant</option>
+                                    <option>Intermédiaire</option>
+                                    <option>Avancé</option>
+                                    <option>Expert</option>
+                                    <option>Mixte</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600; color:#374151;">Temps limite (minutes)</label>
+                                <select id="quizTimeLimit" style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--border-light);">
+                                    <option>5 minutes</option>
+                                    <option>10 minutes</option>
+                                    <option>15 minutes</option>
+                                    <option>20 minutes</option>
+                                    <option>Illimité</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display:block; margin-bottom:6px; font-weight:600; color:#374151;">Matières</label>
+                                <select id="quizSubjects" style="width:100%; padding:10px; border-radius:12px; border:1px solid var(--border-light);">
+                                    <option>Toutes matières</option>
+                                    <option>Mathématiques</option>
+                                    <option>Physique</option>
+                                    <option>Chimie</option>
+                                    <option>Informatique</option>
+                                    <option>Français</option>
+                                    <option>Anglais</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px;">
+                            <label style="display:block; margin-bottom:6px; font-weight:600; color:#374151;">Options spéciales</label>
+                            <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                    <input type="checkbox" id="quizHints" style="accent-color:#2563eb;">
+                                    <span style="font-size:14px;">Indices disponibles</span>
+                                </label>
+                                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                    <input type="checkbox" id="quizExplanations" style="accent-color:#2563eb;">
+                                    <span style="font-size:14px;">Explications détaillées</span>
+                                </label>
+                                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                    <input type="checkbox" id="quizRandomOrder" style="accent-color:#2563eb;">
+                                    <span style="font-size:14px;">Ordre aléatoire</span>
+                                </label>
+                                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                                    <input type="checkbox" id="quizSaveProgress" style="accent-color:#2563eb;">
+                                    <span style="font-size:14px;">Sauvegarder progression</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; display:flex; gap:12px;">
+                            <button class="btn-primary" onclick="startCustomQuiz()" style="flex:1;">🚀 Lancer le Quiz</button>
+                            <button class="btn-secondary" onclick="saveQuizConfig()">💾 Sauvegarder Config</button>
+                            <button class="btn-secondary" onclick="loadSavedQuiz()">📂 Charger Config</button>
+                        </div>
+                    </div>
+
                     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
                         <button class="btn-secondary" onclick="showNotification('Révision ciblée activée !')">Voir mes lacunes</button>
                         <button class="btn-secondary" onclick="showNotification('Mode chrono lancé !')">Mode chrono</button>
@@ -3813,6 +3889,140 @@ Continue comme ça ! 🚀
                     setBreakDuration(savedBreakDuration);
                 }
             });
+        }
+    });
+
+    // ===== FONCTIONS QUIZ PERSONNALISÉ =====
+
+    // Configuration du quiz personnalisé
+    let customQuizConfig = {
+        questionsCount: 10,
+        difficulty: 'Intermédiaire',
+        timeLimit: 15,
+        subjects: 'Toutes matières',
+        hints: false,
+        explanations: true,
+        randomOrder: true,
+        saveProgress: true
+    };
+
+    function startCustomQuiz() {
+        // Récupérer les valeurs du formulaire
+        customQuizConfig.questionsCount = parseInt(document.getElementById('quizQuestionsCount').value) || 10;
+        customQuizConfig.difficulty = document.getElementById('quizDifficulty').value;
+        customQuizConfig.timeLimit = document.getElementById('quizTimeLimit').value;
+        customQuizConfig.subjects = document.getElementById('quizSubjects').value;
+        customQuizConfig.hints = document.getElementById('quizHints').checked;
+        customQuizConfig.explanations = document.getElementById('quizExplanations').checked;
+        customQuizConfig.randomOrder = document.getElementById('quizRandomOrder').checked;
+        customQuizConfig.saveProgress = document.getElementById('quizSaveProgress').checked;
+
+        // Générer les questions selon la configuration
+        const questions = generateCustomQuestions(customQuizConfig);
+
+        if (questions.length === 0) {
+            showNotification('Aucune question disponible pour ces critères. Essayez de modifier votre configuration.');
+            return;
+        }
+
+        // Démarrer le quiz
+        startQuizSession(questions, customQuizConfig);
+        showNotification(`Quiz personnalisé lancé : ${customQuizConfig.questionsCount} questions, ${customQuizConfig.difficulty}, ${customQuizConfig.timeLimit} minutes !`);
+    }
+
+    function generateCustomQuestions(config) {
+        let availableQuestions = [];
+
+        // Filtrer par matière
+        if (config.subjects === 'Toutes matières') {
+            Object.keys(quizBanks).forEach(subject => {
+                availableQuestions = availableQuestions.concat(quizBanks[subject]);
+            });
+        } else {
+            availableQuestions = quizBanks[config.subjects] || [];
+        }
+
+        // Filtrer par difficulté (simulation)
+        if (config.difficulty !== 'Mixte') {
+            // Dans une vraie implémentation, les questions auraient un niveau de difficulté
+            // Pour l'instant, on garde toutes les questions
+        }
+
+        // Mélanger si demandé
+        if (config.randomOrder) {
+            availableQuestions = shuffleArray(availableQuestions);
+        }
+
+        // Limiter le nombre de questions
+        return availableQuestions.slice(0, config.questionsCount);
+    }
+
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    function startQuizSession(questions, config) {
+        // Sauvegarder la configuration si demandé
+        if (config.saveProgress) {
+            localStorage.setItem('customQuizConfig', JSON.stringify(config));
+            localStorage.setItem('customQuizQuestions', JSON.stringify(questions));
+            localStorage.setItem('customQuizStartTime', Date.now());
+        }
+
+        // Rediriger vers la zone de quiz
+        document.getElementById('quizMode').value = 'Révision ciblée'; // Temporaire
+        // Ici on pourrait changer l'interface pour afficher le quiz personnalisé
+        showNotification('Session de quiz personnalisé démarrée !');
+    }
+
+    function saveQuizConfig() {
+        // Récupérer la configuration actuelle
+        const config = {
+            questionsCount: document.getElementById('quizQuestionsCount').value,
+            difficulty: document.getElementById('quizDifficulty').value,
+            timeLimit: document.getElementById('quizTimeLimit').value,
+            subjects: document.getElementById('quizSubjects').value,
+            hints: document.getElementById('quizHints').checked,
+            explanations: document.getElementById('quizExplanations').checked,
+            randomOrder: document.getElementById('quizRandomOrder').checked,
+            saveProgress: document.getElementById('quizSaveProgress').checked
+        };
+
+        localStorage.setItem('savedQuizConfig', JSON.stringify(config));
+        showNotification('Configuration de quiz sauvegardée !');
+    }
+
+    function loadSavedQuiz() {
+        const savedConfig = localStorage.getItem('savedQuizConfig');
+        if (savedConfig) {
+            const config = JSON.parse(savedConfig);
+
+            // Restaurer les valeurs dans le formulaire
+            document.getElementById('quizQuestionsCount').value = config.questionsCount;
+            document.getElementById('quizDifficulty').value = config.difficulty;
+            document.getElementById('quizTimeLimit').value = config.timeLimit;
+            document.getElementById('quizSubjects').value = config.subjects;
+            document.getElementById('quizHints').checked = config.hints;
+            document.getElementById('quizExplanations').checked = config.explanations;
+            document.getElementById('quizRandomOrder').checked = config.randomOrder;
+            document.getElementById('quizSaveProgress').checked = config.saveProgress;
+
+            showNotification('Configuration de quiz chargée !');
+        } else {
+            showNotification('Aucune configuration sauvegardée trouvée.');
+        }
+    }
+
+    // Charger la configuration sauvegardée au démarrage
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedConfig = localStorage.getItem('savedQuizConfig');
+        if (savedConfig) {
+            loadSavedQuiz();
         }
     });
 
