@@ -144,6 +144,7 @@
         .btn-block-margin { margin-top: 16px; }
         .last-active { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
         .modal-content-text { margin-top: 16px; }
+        .video-subtitle { margin-top: 8px; color: var(--text-secondary); }
         .modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--bg-secondary); border: none; cursor: pointer; }
         
         @media (max-width: 1000px) { .sidebar { width: 80px; } .logo-text, .nav-item span, .user-info, .nav-section-title, .progress-overview { display: none; } .main-content { margin-left: 80px; } .quick-stats { grid-template-columns: repeat(2,1fr); } }
@@ -219,24 +220,24 @@
             </div>
             <div class="widget"><div class="widget-title"><i class="fas fa-clock"></i> Vidéos recommandées</div>
                 <div class="video-grid">
-                    <div class="video-card" onclick="showNotification('Lecture: Design Patterns')"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Design Pattern Observer</div><span class="category-badge">Dev Avancé</span><p style="margin-top:8px; color:var(--text-secondary);">Implémentation en projet réel</p></div></div>
+                    <div class="video-card" onclick="showNotification('Lecture: Design Patterns')"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Design Pattern Observer</div><span class="category-badge">Dev Avancé</span><p class="video-subtitle">Implémentation en projet réel</p></div></div>
                     <div class="video-card" onclick="showNotification('Lecture: Macroéconomie')"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Politique monétaire et inflation</div><span class="category-badge">Macroéconomie</span></div></div>
                 </div>
             </div>
         </div>
 
         <!-- AUTRES PAGES SIMPLIFIÉES -->
-        <div class="page-container" id="page-videos"><div class="category-header" style="background:var(--primary); border-radius:28px; padding:32px; color:white;"><h1>Toutes les vidéos</h1><p>+50 contenus exclusifs</p></div><div class="video-grid"><div class="video-card"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Microservices avec RabbitMQ</div></div></div></div></div>
-        <div class="page-container" id="page-dev-avance"><div class="category-header" style="background:var(--primary); border-radius:28px; padding:32px;"><h1><i class="fas fa-code"></i> Développement Avancé</h1></div><div class="resource-grid"><div class="resource-card"><h3>Design Patterns Complets</h3><button class="btn-block" style="margin-top:16px;" onclick="showNotification('Cours lancé')">Commencer</button></div><div class="resource-card"><h3>Microservices & Cloud</h3><button class="btn-block" style="margin-top:16px;" onclick="showNotification('Cours lancé')">Explorer</button></div></div></div>
-        <div class="page-container" id="page-micro-macro"><div class="category-header" style="background:var(--primary); border-radius:28px; padding:32px;"><h1>Micro & Macroéconomie</h1></div><div class="resource-grid"><div class="resource-card"><h3>Offre et Demande</h3><button class="btn-block" onclick="showNotification('Module démarré')">Étudier</button></div></div></div>
-        <div class="page-container" id="page-pensee-critique"><div class="category-header" style="background:var(--primary); padding:32px;"><h1>Pensée Critique</h1></div><div class="widget"><p>Ateliers d'analyse et de raisonnement logique</p></div></div>
-        <div class="page-container" id="page-leadership"><div class="category-header" style="background:var(--primary); padding:32px;"><h1>Leadership & RH</h1></div><div class="widget"><p>Gestion d'équipe, communication managériale</p></div></div>
-        <div class="page-container" id="page-entrepreneuriat"><div class="category-header" style="background:var(--primary); padding:32px;"><h1>Entrepreneuriat</h1></div><div class="resource-grid"><div class="resource-card"><h3>Business Model Canvas</h3><button class="btn-block" onclick="showNotification('Lancement du module')">Démarrer</button></div></div></div>
-        <div class="page-container" id="page-psychologue"><div class="category-header" style="background:linear-gradient(135deg,#4c1d95,#5b21b6); padding:32px; border-radius:28px;"><h1><i class="fas fa-hand-holding-heart"></i> Bien-être & Psychologie</h1></div><div class="widget"><div class="widget-title">Séances disponibles</div><button class="btn-block" onclick="showNotification('RDV avec psychologue')">Prendre rendez-vous</button></div></div>
+        <div class="page-container" id="page-videos"><div class="page-header-primary"><h1>Toutes les vidéos</h1><p>+50 contenus exclusifs</p></div><div class="video-grid"><div class="video-card"><div class="video-thumbnail"><div class="play-btn"><i class="fas fa-play"></i></div></div><div><div class="video-title">Microservices avec RabbitMQ</div></div></div></div></div>
+        <div class="page-container" id="page-dev-avance"><div class="page-header-primary"><h1><i class="fas fa-code"></i> Développement Avancé</h1></div><div class="resource-grid"><div class="resource-card"><h3>Design Patterns Complets</h3><button class="btn-block" onclick="showNotification('Cours lancé')">Commencer</button></div><div class="resource-card"><h3>Microservices & Cloud</h3><button class="btn-block" onclick="showNotification('Cours lancé')">Explorer</button></div></div></div>
+        <div class="page-container" id="page-micro-macro"><div class="page-header-primary"><h1>Micro & Macroéconomie</h1></div><div class="resource-grid"><div class="resource-card"><h3>Offre et Demande</h3><button class="btn-block" onclick="showNotification('Module démarré')">Étudier</button></div></div></div>
+        <div class="page-container" id="page-pensee-critique"><div class="page-header-primary"><h1>Pensée Critique</h1></div><div class="widget"><p>Ateliers d'analyse et de raisonnement logique</p></div></div>
+        <div class="page-container" id="page-leadership"><div class="page-header-primary"><h1>Leadership & RH</h1></div><div class="widget"><p>Gestion d'équipe, communication managériale</p></div></div>
+        <div class="page-container" id="page-entrepreneuriat"><div class="page-header-primary"><h1>Entrepreneuriat</h1></div><div class="resource-grid"><div class="resource-card"><h3>Business Model Canvas</h3><button class="btn-block" onclick="showNotification('Lancement du module')">Démarrer</button></div></div></div>
+        <div class="page-container" id="page-psychologue"><div class="page-header-gradient"><h1><i class="fas fa-hand-holding-heart"></i> Bien-être & Psychologie</h1></div><div class="widget"><div class="widget-title">Séances disponibles</div><button class="btn-block" onclick="showNotification('RDV avec psychologue')">Prendre rendez-vous</button></div></div>
     </div>
 </div>
 
-<div class="modal-overlay" id="modal"><div class="modal"><div class="modal-header" style="display:flex; justify-content:space-between;"><h2 id="modalTitle">Notification</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><p id="modalMessage" style="margin-top:16px;"></p></div></div>
+<div class="modal-overlay" id="modal"><div class="modal"><div class="modal-header-styled"><h2 id="modalTitle">Notification</h2><button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button></div><p id="modalMessage" class="modal-content-text"></p></div></div>
 
 <script>
     // ==================== BASE DE DONNÉES SIMULÉE ====================
