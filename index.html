@@ -325,7 +325,16 @@
 
         /* Simulation */
         .simulate-form select, .simulate-form button { padding: 10px 16px; border-radius: 30px; border: 1px solid var(--border-light); margin: 8px 0; width: 100%; }
-        .result-card { margin-top: 16px; background: #eef6ff; padding: 16px; border-radius: 20px; }
+        .simulation-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+        .form-instruction { margin-bottom: 12px; color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+        .simulation-benefits { background: #ffffff; border: 1px solid rgba(56,189,248,0.15); border-radius: 24px; padding: 22px; }
+        .simulation-benefits h4 { margin-bottom: 18px; font-size: 1.1rem; }
+        .benefit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .benefit-card { padding: 18px; border-radius: 20px; background: #eff8ff; box-shadow: 0 14px 32px rgba(56,189,248,0.08); }
+        .benefit-card h5 { font-size: 1rem; margin-bottom: 10px; }
+        .benefit-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+        .result-card { margin-top: 16px; background: #eef6ff; padding: 20px; border-radius: 20px; }
+        @media (max-width: 930px) { .simulation-panel { grid-template-columns: 1fr; } .benefit-grid { grid-template-columns: 1fr; } }
 
         /* Chat */
         .chat-container { border: 1px solid var(--border-light); border-radius: 20px; overflow: hidden; }
@@ -634,7 +643,7 @@
 
             <!-- ===== PAGE: TOUTES LES VIDÉOS ===== -->
             <div class="page-container" id="page-videos">
-                <div class="content-header"><div class="page-title"><h1><i class="fas fa-video"></i> Toutes les Vidéos Courtes</h1><p>Explications, applications réelles, cours avancés et guides projets</p></div><div class="filter-tabs"><span class="filter-tab active">Toutes</span><span class="filter-tab">Dev</span><span class="filter-tab">Économie</span><span class="filter-tab">Soft Skills</span><span class="filter-tab"><a href="prototype 1.html" target="_blank">Vu complète</a></span></div></div>
+                <div class="content-header"><div class="page-title"><h1><i class="fas fa-video"></i> Toutes les Vidéos Courtes</h1><p>Explications, applications réelles, cours avancés et guides projets</p></div><div class="filter-tabs"><span class="filter-tab active">Toutes</span><span class="filter-tab">Dev</span><span class="filter-tab">Économie</span><span class="filter-tab">Soft Skills</span><span class="filter-tab"><a href="prototype1.html" target="_blank">Vu complète</a></span></div></div>
                 <div class="video-grid">
                     <div class="video-card"><div class="video-thumbnail"><div class="video-badge"><i class="fas fa-flask"></i> Application Réelle</div><div class="play-btn"><i class="fas fa-play"></i></div><div class="video-duration">3:45</div></div><div class="video-details"><div class="video-title">Microservices : Communication asynchrone avec RabbitMQ</div><div class="video-meta"><span>Dr. Amine Ben Ali</span><span class="category-badge">Dev Avancé</span></div><div class="video-description">Implémentation d'une architecture événementielle avec RabbitMQ dans un projet e-commerce.</div></div></div>
                     <div class="video-card"><div class="video-thumbnail"><div class="video-badge"><i class="fas fa-chart-bar"></i> Explication</div><div class="play-btn"><i class="fas fa-play"></i></div><div class="video-duration">5:20</div></div><div class="video-details"><div class="video-title">Le PIB : Définition, Calcul et Limites</div><div class="video-meta"><span>Pr. Leila Mansour</span><span class="category-badge">Macroéconomie</span></div><div class="video-description">Comprendre le Produit Intérieur Brut avec des exemples concrets de l'économie tunisienne.</div></div></div>
@@ -854,12 +863,36 @@
 
                 <!-- Module 3 : Simulation -->
                 <div id="module-simulation" class="module-tab-content">
-                    <div class="simulate-form">
-                        <select id="simDomain"><option>Informatique & IA</option><option>Ingénierie</option><option>Gestion & Finance</option></select>
-                        <select id="simSkill"><option>Analyse de données</option><option>Programmation</option><option>Communication</option></select>
-                        <button id="simulateBtnModule" class="btn-primary">Simuler mon parcours</button>
-                        <div id="simResultModule" class="result-card" style="display:none;"></div>
+                    <div class="simulation-panel">
+                        <div class="simulate-form">
+                            <p class="form-instruction">Choisis ton domaine et ta compétence clé pour générer un parcours guidé, avec étapes recommandées et objectifs de croissance.</p>
+                            <select id="simDomain"><option>Informatique & IA</option><option>Ingénierie</option><option>Gestion & Finance</option></select>
+                            <select id="simSkill"><option>Analyse de données</option><option>Programmation</option><option>Communication</option></select>
+                            <button id="simulateBtnModule" class="btn-primary">Simuler mon parcours</button>
+                        </div>
+                        <div class="simulation-benefits">
+                            <h4>Bénéfices de la simulation parcours</h4>
+                            <div class="benefit-grid">
+                                <div class="benefit-card">
+                                    <h5>Clarté de trajectoire</h5>
+                                    <p>Visualise les étapes clés pour atteindre ton objectif métier avec une feuille de route concrète.</p>
+                                </div>
+                                <div class="benefit-card">
+                                    <h5>Optimisation du temps</h5>
+                                    <p>Concentre-toi sur les compétences qui auront le plus d'impact sur ta progression.</p>
+                                </div>
+                                <div class="benefit-card">
+                                    <h5>Choix personnalisé</h5>
+                                    <p>Reçois des recommandations adaptées à ton profil, ton domaine et ton niveau actuel.</p>
+                                </div>
+                                <div class="benefit-card">
+                                    <h5>Passerelle employabilité</h5>
+                                    <p>Découvre les compétences demandées et les options de certification qui valorisent ton CV.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    <div id="simResultModule" class="result-card" style="display:none;"></div>
                 </div>
 
                 <!-- Module 4 : Mentor IA -->
@@ -1085,8 +1118,33 @@
         const domain = document.getElementById('simDomain').value;
         const skill = document.getElementById('simSkill').value;
         const resDiv = document.getElementById('simResultModule');
-        let metier = domain.includes('Informatique') ? 'Data Scientist' : (domain.includes('Ingénierie') ? 'Ingénieur' : 'Analyste financier');
-        resDiv.innerHTML = `<h4>🔮 Parcours suggéré</h4><p><strong>Métier :</strong> ${metier}</p><p><strong>Compétences :</strong> ${skill}, communication, résolution de problèmes.</p>`;
+        const jobs = {
+            'Informatique & IA': 'Data Scientist',
+            'Ingénierie': 'Ingénieur R&D',
+            'Gestion & Finance': 'Analyste financier'
+        };
+        const job = jobs[domain] || 'Spécialiste de carrière';
+        const benefits = domain === 'Informatique & IA'
+            ? ['Feuille de route data et IA', 'Prochaines certifications recommandées', 'Ressources de projet pratique']
+            : domain === 'Ingénierie'
+            ? ['Plan de montée en compétences technique', 'Outils métiers adaptés', 'Accompagnement projet']
+            : ['Stratégie de valeur ajoutée', 'Compétences recherchées par les recruteurs', 'Exemples de cas concrets'];
+
+        resDiv.innerHTML = `
+            <h4>🔮 Parcours suggéré</h4>
+            <p><strong>Métier :</strong> ${job}</p>
+            <p><strong>Compétence clé :</strong> ${skill}</p>
+            <div style="margin-top:16px;">
+                <strong>Bénéfices attendus :</strong>
+                <ul style="margin-top:10px; padding-left:20px; color: var(--text-secondary);">
+                    ${benefits.map(item => `<li style="margin-bottom:8px;">${item}</li>`).join('')}
+                </ul>
+            </div>
+            <div style="margin-top:16px; padding:16px; border-radius:18px; background:#ffffff; border:1px solid rgba(56,189,248,0.18);">
+                <strong>Prochaines actions :</strong>
+                <p style="margin:10px 0 0;">Suivre des modules ciblés, valider une mini-certification et préparer une présentation de projet.</p>
+            </div>
+        `;
         resDiv.style.display = 'block';
     });
 
