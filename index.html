@@ -40,12 +40,29 @@
             box-sizing: border-box;
         }
 
+
+      /* === Taille adaptative === */
+
+
+
+
+        <!--  ===Taille adaptative=== -->
+
+
+
+
+
+
+
+
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.6;
             overflow-x: hidden;
+
         }
 
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -1638,6 +1655,7 @@
                             <select id="simCVTemplate"><option>Standard</option><option>Créatif</option><option>Professionnel</option><option>ATS</option></select>
                             <select id="simCVEvalMode"><option>Résumé</option><option>Diagrammes</option><option>Recommandations modernisées</option></select>
                             <input id="simIndustry" type="text" placeholder="Secteur ou entreprise cible" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
+                            <input id="simLinkedIn" type="text" placeholder="Lien LinkedIn" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
                             <input id="simHours" type="number" min="1" max="40" placeholder="Heures / semaine" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%; margin-bottom:12px;">
                             <button id="simulateBtnModule" class="btn-primary">Simuler mon parcours</button>
                             <div class="cv-generator" style="margin-top:18px; display:grid; gap:12px;">
@@ -1649,6 +1667,34 @@
                                     <button class="btn-outline" onclick="generateCV()" style="flex:1; min-width:160px;">Générer mon CV</button>
                                     <button class="btn-secondary" onclick="evaluateCV()" style="flex:1; min-width:160px;">Évaluer mon CV</button>
                                 </div>
+                            </div>
+                            <!-- Générateur de Roadmap -->
+                            <div class="roadmap-generator" style="margin-top:24px; padding:20px; background:linear-gradient(135deg, rgba(56,189,248,0.1), rgba(167,139,250,0.1)); border-radius:24px; border:1px solid rgba(56,189,248,0.2);">
+                                <h4 style="margin-bottom:16px; display:flex; align-items:center; gap:8px;"><i class="fas fa-road"></i> Générateur de Roadmap</h4>
+                                <p style="font-size:14px; color:var(--text-secondary); margin-bottom:16px;">Crée une feuille de route détaillée basée sur roadmap.sh pour ton domaine.</p>
+                                <div style="display:grid; gap:12px;">
+                                    <select id="roadmapDomain" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%;">
+                                        <option value="">Choisis un domaine pour ta roadmap</option>
+                                        <option value="frontend">Frontend Development</option>
+                                        <option value="backend">Backend Development</option>
+                                        <option value="full-stack">Full Stack Development</option>
+                                        <option value="devops">DevOps</option>
+                                        <option value="data-science">Data Science</option>
+                                        <option value="machine-learning">Machine Learning</option>
+                                        <option value="android">Android Development</option>
+                                        <option value="qa">QA Engineering</option>
+                                        <option value="uiux">UI/UX Design</option>
+                                        <option value="system-design">System Design</option>
+                                    </select>
+                                    <select id="roadmapLevel" style="padding:12px 16px; border-radius:24px; border:1px solid var(--border-light); width:100%;">
+                                        <option value="">Sélectionne ton niveau</option>
+                                        <option value="beginner">Débutant (0-6 mois)</option>
+                                        <option value="intermediate">Intermédiaire (6-12 mois)</option>
+                                        <option value="advanced">Avancé (1-2 ans)</option>
+                                    </select>
+                                    <button class="btn-primary" onclick="generateRoadmap()" style="width:100%;">Générer ma Roadmap</button>
+                                </div>
+                                <div id="roadmapOutput" style="margin-top:16px; display:none; padding:16px; background:white; border-radius:16px; border-left:4px solid var(--accent);"></div>
                             </div>
                         </div>
                         <div class="simulation-benefits">
@@ -3288,7 +3334,8 @@
     
     
     
-
+    
+    <!--            -->
     
     // Tabs des modules
     const moduleBtns = document.querySelectorAll('.tab-module-btn');
@@ -3663,6 +3710,383 @@
             </div>
         `;
         showModal('Évaluation de ton CV', resultHtml);
+    }
+
+    function generateRoadmap() {
+        const domain = document.getElementById('roadmapDomain').value;
+        const level = document.getElementById('roadmapLevel').value;
+
+        if (!domain || !level) {
+            showNotification('Veuillez sélectionner un domaine et un niveau');
+            return;
+        }
+
+        const roadmaps = {
+            'frontend': {
+                'beginner': {
+                    title: '🚀 Frontend Development - Débutant (0-6 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Fondamentaux Web',
+                            skills: ['HTML5', 'CSS3', 'Flexbox & Grid', 'Responsivité'],
+                            projects: ['Portfolio personnel simple', 'Landing page responsive'],
+                            resources: ['FreeCodeCamp HTML/CSS', 'MDN Web Docs']
+                        },
+                        {
+                            month: 'Mois 3-4: JavaScript Essentiels',
+                            skills: ['Variables & Types', 'Fonctions', 'DOM Manipulation', 'ES6 Basics'],
+                            projects: ['Todo App', 'Quiz Game'],
+                            resources: ['JavaScript.info', 'CodePen examples']
+                        },
+                        {
+                            month: 'Mois 5-6: Frameworks & Outils',
+                            skills: ['React Basics', 'Components', 'State & Props', 'Git'],
+                            projects: ['React Todo App', 'GitHub Portfolio'],
+                            resources: ['React Official Docs', 'Scrimba React course']
+                        }
+                    ]
+                },
+                'intermediate': {
+                    title: '🎯 Frontend Development - Intermédiaire (6-12 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-3: React Avancé',
+                            skills: ['Hooks', 'Context API', 'React Router', 'Async Operations'],
+                            projects: ['Real API Integration', 'Multi-page App'],
+                            resources: ['React Hooks Documentation', 'Frontend Masters']
+                        },
+                        {
+                            month: 'Mois 4-6: State Management',
+                            skills: ['Redux/Zustand', 'Redux Thunk', 'Middleware', 'Testing'],
+                            projects: ['Complex State App', 'Unit Tests'],
+                            resources: ['Redux Official', 'Testing Library Docs']
+                        },
+                        {
+                            month: 'Mois 7-9: Performance & Build Tools',
+                            skills: ['Webpack', 'Vite', 'Code Splitting', 'Performance Optimization'],
+                            projects: ['Optimized Production Build', 'Bundle Analysis'],
+                            resources: ['Webpack Documentation', 'Web Vitals']
+                        },
+                        {
+                            month: 'Mois 10-12: Spécialisation',
+                            skills: ['TypeScript', 'Testing (Jest/Cypress)', 'DevTools', 'CSS-in-JS'],
+                            projects: ['TypeScript Project', 'E2E Tests'],
+                            resources: ['TypeScript Handbook', 'Cypress Documentation']
+                        }
+                    ]
+                },
+                'advanced': {
+                    title: '💎 Frontend Development - Avancé (1-2 ans)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Architecture & Design Patterns',
+                            skills: ['Micro-frontends', 'Design Patterns', 'Clean Code', 'SOLID Principles'],
+                            projects: ['Scalable App Architecture', 'Design Pattern Implementation'],
+                            resources: ['Clean Code', 'Frontend Architecture']
+                        },
+                        {
+                            month: 'Mois 3-4: Performance Avancée',
+                            skills: ['Web Performance', 'Caching Strategies', 'SEO', 'Core Web Vitals'],
+                            projects: ['Performance Audit', 'PWA Build'],
+                            resources: ['Web Performance Working Group', 'Lighthouse Docs']
+                        },
+                        {
+                            month: 'Mois 5-6: Frameworks Modernes',
+                            skills: ['Next.js/Nuxt', 'SSR/SSG', 'API Routes', 'Edge Computing'],
+                            projects: ['Full-stack Next.js App', 'Deployed Project'],
+                            resources: ['Next.js Documentation', 'Vercel Docs']
+                        },
+                        {
+                            month: 'Mois 7+: Experimentation & Contribution',
+                            skills: ['Open Source', 'Library Development', 'Innovation', 'Mentoring'],
+                            projects: ['NPM Package', 'Open Source Contribution'],
+                            resources: ['How to Contribute to OS', 'Library Development Guide']
+                        }
+                    ]
+                }
+            },
+            'backend': {
+                'beginner': {
+                    title: '🚀 Backend Development - Débutant (0-6 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Programmation & Bases de Données',
+                            skills: ['Python/Node.js', 'Variables & Control Flow', 'SQL Basics', 'Database Setup'],
+                            projects: ['Simple CLI App', 'Local Database'],
+                            resources: ['The Python Tutorial', 'SQL Tutorial']
+                        },
+                        {
+                            month: 'Mois 3-4: APIs & Web Servers',
+                            skills: ['HTTP Protocol', 'REST Principles', 'Server Setup', 'Request Handling'],
+                            projects: ['Simple REST API', 'CRUD Operations'],
+                            resources: ['REST API Best Practices', 'Express/Flask Docs']
+                        },
+                        {
+                            month: 'Mois 5-6: Authentification & Sécurité',
+                            skills: ['Authentication', 'Hashing', 'JWT', 'Basic Security'],
+                            projects: ['Login System', 'Secured API'],
+                            resources: ['OWASP Top 10', 'JWT Authentication']
+                        }
+                    ]
+                },
+                'intermediate': {
+                    title: '🎯 Backend Development - Intermédiaire (6-12 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-3: Advanced API Design',
+                            skills: ['GraphQL', 'Versioning', 'Rate Limiting', 'Caching'],
+                            projects: ['GraphQL API', 'Scalable Endpoints'],
+                            resources: ['GraphQL Official', 'API Security Best Practices']
+                        },
+                        {
+                            month: 'Mois 4-6: Database Optimization',
+                            skills: ['Query Optimization', 'Indexing', 'Transactions', 'Replication'],
+                            projects: ['Database Performance Tuning', 'Complex Queries'],
+                            resources: ['Database Design Patterns', 'SQL Performance']
+                        },
+                        {
+                            month: 'Mois 7-9: Message Queues & Async',
+                            skills: ['RabbitMQ/Redis', 'Background Jobs', 'Event-Driven Architecture'],
+                            projects: ['Task Queue System', 'Event Processing'],
+                            resources: ['Message Queue Patterns', 'Async Architecture']
+                        },
+                        {
+                            month: 'Mois 10-12: Microservices',
+                            skills: ['Microservices Design', 'Service Communication', 'Containerization'],
+                            projects: ['Microservices Setup', 'Docker Implementation'],
+                            resources: ['Microservices Patterns', 'Docker Documentation']
+                        }
+                    ]
+                },
+                'advanced': {
+                    title: '💎 Backend Development - Avancé (1-2 ans)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Distributed Systems',
+                            skills: ['Consistency Models', 'Consensus Algorithms', 'Load Balancing'],
+                            projects: ['Distributed Cache', 'Load Balanced System'],
+                            resources: ['Designing Data-Intensive Applications']
+                        },
+                        {
+                            month: 'Mois 3-4: Cloud & DevOps',
+                            skills: ['AWS/GCP/Azure', 'Kubernetes', 'CI/CD', 'Infrastructure as Code'],
+                            projects: ['Cloud Deployment', 'Kubernetes Orchestration'],
+                            resources: ['AWS Solutions Architect', 'Kubernetes Documentation']
+                        },
+                        {
+                            month: 'Mois 5+: Advanced Topics',
+                            skills: ['Observability', 'Performance Tuning', 'Security Hardening'],
+                            projects: ['Monitoring System', 'Optimized Architecture'],
+                            resources: ['Site Reliability Engineering', 'Advanced Backend Patterns']
+                        }
+                    ]
+                }
+            },
+            'data-science': {
+                'beginner': {
+                    title: '🚀 Data Science - Débutant (0-6 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Python & Data Structures',
+                            skills: ['Python Basics', 'NumPy', 'Pandas', 'Data Structures'],
+                            projects: ['Data Cleaning Project', 'Exploratory Analysis'],
+                            resources: ['NumPy Tutorial', 'Pandas Documentation']
+                        },
+                        {
+                            month: 'Mois 3-4: Statistics & Visualization',
+                            skills: ['Descriptive Statistics', 'Probability', 'Matplotlib', 'Seaborn'],
+                            projects: ['Statistical Analysis', 'Data Dashboard'],
+                            resources: ['Statistics Fundamentals', 'Matplotlib Guide']
+                        },
+                        {
+                            month: 'Mois 5-6: Machine Learning Basics',
+                            skills: ['Supervised Learning', 'Classification', 'Regression', 'Scikit-learn'],
+                            projects: ['Simple ML Model', 'Prediction Project'],
+                            resources: ['Scikit-learn Tutorials', 'ML Basics Course']
+                        }
+                    ]
+                },
+                'intermediate': {
+                    title: '🎯 Data Science - Intermédiaire (6-12 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-3: Advanced ML',
+                            skills: ['Ensemble Methods', 'Hyperparameter Tuning', 'Cross-Validation'],
+                            projects: ['Kaggle Competition', 'Advanced ML Model'],
+                            resources: ['Kaggle Courses', 'ML Best Practices']
+                        },
+                        {
+                            month: 'Mois 4-6: Deep Learning',
+                            skills: ['Neural Networks', 'TensorFlow/PyTorch', 'CNN', 'RNN'],
+                            projects: ['Image Classification', 'Text Processing'],
+                            resources: ['Deep Learning Specialization', 'PyTorch Tutorials']
+                        },
+                        {
+                            month: 'Mois 7-9: Big Data',
+                            skills: ['Spark', 'SQL', 'Hadoop', 'Data Engineering'],
+                            projects: ['Big Data Pipeline', 'Distributed Computing'],
+                            resources: ['Spark Documentation', 'Big Data Platforms']
+                        },
+                        {
+                            month: 'Mois 10-12: Production & MLOps',
+                            skills: ['Model Deployment', 'MLOps', 'Monitoring', 'Versioning'],
+                            projects: ['Production ML Pipeline', 'Model Monitoring'],
+                            resources: ['MLOps.community', 'Model Deployment']
+                        }
+                    ]
+                },
+                'advanced': {
+                    title: '💎 Data Science - Avancé (1-2 ans)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Advanced Topics',
+                            skills: ['NLP, Time Series', 'Reinforcement Learning', 'Graph ML'],
+                            projects: ['NLP Project', 'Sequence Prediction'],
+                            resources: ['Advanced NLP', 'RL Algorithms']
+                        },
+                        {
+                            month: 'Mois 3+: Research & Innovation',
+                            skills: ['Academic Research', 'Paper Reading', 'Innovation', 'Contribution'],
+                            projects: ['Research Implementation', 'Novel Approach'],
+                            resources: ['ArXiv Papers', 'Research Communities']
+                        }
+                    ]
+                }
+            },
+            'devops': {
+                'beginner': {
+                    title: '🚀 DevOps - Débutant (0-6 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Linux & Shell',
+                            skills: ['Linux Basics', 'Command Line', 'Shell Scripting', 'System Administration'],
+                            projects: ['Server Setup', 'Automation Script'],
+                            resources: ['Linux Academy', 'Bash Guide']
+                        },
+                        {
+                            month: 'Mois 3-4: Containerization',
+                            skills: ['Docker', 'Images', 'Containers', 'Docker Compose'],
+                            projects: ['Dockerized Application', 'Multi-container Setup'],
+                            resources: ['Docker Official Guide', 'Docker for Beginners']
+                        },
+                        {
+                            month: 'Mois 5-6: CI/CD Basics',
+                            skills: ['Git', 'GitHub Actions', 'Jenkins', 'Pipeline Concepts'],
+                            projects: ['Automated Pipeline', 'Continuous Deployment'],
+                            resources: ['Git Documentation', 'GitHub Actions Guide']
+                        }
+                    ]
+                },
+                'intermediate': {
+                    title: '🎯 DevOps - Intermédiaire (6-12 mois)',
+                    stages: [
+                        {
+                            month: 'Mois 1-3: Kubernetes Fundamentals',
+                            skills: ['Kubernetes Concepts', 'Pods', 'Deployments', 'Services'],
+                            projects: ['Kubernetes Cluster', 'Orchestrated App'],
+                            resources: ['Kubernetes Official Docs', 'Kubernetes by Example']
+                        },
+                        {
+                            month: 'Mois 4-6: Infrastructure as Code',
+                            skills: ['Terraform', 'Ansible', 'CloudFormation', 'Infrastructure Design'],
+                            projects: ['Infrastructure Automation', 'Cloud Deployment'],
+                            resources: ['Terraform Docs', 'Ansible Learn']
+                        },
+                        {
+                            month: 'Mois 7-9: Monitoring & Logging',
+                            skills: ['Prometheus', 'Grafana', 'ELK Stack', 'Application Monitoring'],
+                            projects: ['Monitoring Setup', 'Log Analysis System'],
+                            resources: ['Prometheus Documentation', 'ELK Stack Guide']
+                        },
+                        {
+                            month: 'Mois 10-12: Cloud Platforms',
+                            skills: ['AWS', 'GCP', 'Azure', 'Multi-cloud Strategies'],
+                            projects: ['Cloud Infrastructure', 'Multi-cloud Setup'],
+                            resources: ['AWS Documentation', 'Cloud Certifications']
+                        }
+                    ]
+                },
+                'advanced': {
+                    title: '💎 DevOps - Avancé (1-2 ans)',
+                    stages: [
+                        {
+                            month: 'Mois 1-2: Advanced Kubernetes',
+                            skills: ['Custom Resources', 'Operators', 'Service Mesh', 'Security'],
+                            projects: ['Custom Operator', 'Service Mesh Implementation'],
+                            resources: ['Advanced Kubernetes', 'Istio Documentation']
+                        },
+                        {
+                            month: 'Mois 3+: Enterprise Solutions',
+                            skills: ['Disaster Recovery', 'Compliance', 'Cost Optimization', 'Scaling'],
+                            projects: ['DR Strategy', 'Enterprise Automation'],
+                            resources: ['SRE Book', 'Enterprise DevOps Patterns']
+                        }
+                    ]
+                }
+            }
+        };
+
+        const roadmapData = roadmaps[domain]?.[level];
+
+        if (!roadmapData) {
+            showNotification('Roadmap non disponible pour cette combinaison');
+            return;
+        }
+
+        let roadmapHTML = `
+        <div style="background:linear-gradient(135deg, rgba(56,189,248,0.15), rgba(167,139,250,0.15)); padding:20px; border-radius:16px; margin-bottom:20px;">
+            <h3 style="color:var(--primary); margin:0 0 8px 0;">${roadmapData.title}</h3>
+            <p style="color:var(--text-secondary); margin:0; font-size:14px;">Feuille de route personnalisée basée sur roadmap.sh</p>
+        </div>
+        `;
+
+        roadmapData.stages.forEach((stage, index) => {
+            roadmapHTML += `
+            <div style="margin-bottom:20px; padding:16px; background:#ffffff; border:1px solid rgba(15,23,42,0.08); border-radius:16px; border-left:4px solid var(--accent);">
+                <h4 style="color:var(--primary); margin:0 0 12px 0; display:flex; align-items:center; gap:8px;">
+                    <span style="background:var(--accent); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;">${index + 1}</span>
+                    ${stage.month}
+                </h4>
+                <div style="margin-bottom:12px;">
+                    <div style="font-weight:600; color:var(--text-secondary); margin-bottom:8px;">🎯 Compétences à maîtriser:</div>
+                    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                        ${stage.skills.map(skill => `<span style="background:var(--bg-secondary); padding:4px 10px; border-radius:8px; font-size:12px; color:var(--text-secondary);">${skill}</span>`).join('')}
+                    </div>
+                </div>
+                <div style="margin-bottom:12px;">
+                    <div style="font-weight:600; color:var(--text-secondary); margin-bottom:8px;">💼 Projets recommandés:</div>
+                    <ul style="margin:0; padding-left:20px; color:var(--text-secondary); font-size:14px;">
+                        ${stage.projects.map(project => `<li style="margin-bottom:4px;">${project}</li>`).join('')}
+                    </ul>
+                </div>
+                <div>
+                    <div style="font-weight:600; color:var(--text-secondary); margin-bottom:8px;">📚 Ressources:</div>
+                    <ul style="margin:0; padding-left:20px; color:var(--text-secondary); font-size:14px;">
+                        ${stage.resources.map(res => `<li style="margin-bottom:4px;">${res}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+            `;
+        });
+
+        roadmapHTML += `
+        <div style="background:#f0fdf4; border:1px solid rgba(34,197,94,0.2); border-radius:16px; padding:16px; margin-top:20px;">
+            <div style="font-weight:700; color:#16a34a; margin-bottom:8px;">✅ Conseils pour suivre cette roadmap</div>
+            <ul style="margin:0; padding-left:20px; color:#15803d; font-size:14px;">
+                <li>Consacre au moins 2-3 heures par jour à l'apprentissage</li>
+                <li>Réalise chaque projet avant de passer au suivant</li>
+                <li>Contribue à l'open source pour renforcer tes compétences</li>
+                <li>Participe à des communautés et échange avec d'autres</li>
+                <li>Revois régulièrement les concepts fondamentaux</li>
+            </ul>
+        </div>
+        `;
+
+        const roadmapOutput = document.getElementById('roadmapOutput');
+        roadmapOutput.innerHTML = roadmapHTML;
+        roadmapOutput.style.display = 'block';
+
+        showNotification(`✅ Roadmap générée pour ${roadmapData.title.split(' - ')[1]}`);
     }
 
     document.getElementById('simCVFile').addEventListener('change', (event) => {
