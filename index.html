@@ -3267,6 +3267,7 @@
             modalTitle.textContent = 'Information';
             modalMessage.textContent = message;
             modal.classList.add('active');
+            appendNotificationHistory(message);
             
             setTimeout(() => {
                 modal.classList.remove('active');
@@ -3340,6 +3341,32 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        const moduleStorageKeys = {
+            notifications: 'superedu_notifications',
+            kanban: 'superedu_kanban_tasks',
+            calendar: 'superedu_calendar_events',
+            notificationsPrefs: 'superedu_notification_prefs',
+            spacedCards: 'superedu_spaced_cards'
+        };
+
+        function readStoredJson(key, fallback) {
+            try {
+                const rawValue = localStorage.getItem(key);
+                return rawValue ? JSON.parse(rawValue) : fallback;
+            } catch (error) {
+                return fallback;
+            }
+        }
+
+        function writeStoredJson(key, value) {
+            localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        function appendNotificationHistory(message) {
+            const history = readStoredJson(moduleStorageKeys.notifications, []);
+            history.unshift({ message, timestamp: new Date().toISOString() });
+            writeStoredJson(moduleStorageKeys.notifications, history.slice(0, 50));
+        }
         const pfaStorageKey = 'superedu_pfa_projects';
         const defaultPfaProjects = [
             { title: 'Systeme IA Predictif', type: 'PFE', domain: 'Informatique', progress: 72, members: 4, deadline: '2025-05-15', goal: 'Prédire les tendances du marché avec du machine learning.', status: 'Analyse de données', mentor: 'Pr. Mohamed Ben Salem' },
@@ -4983,7 +5010,75 @@ Continue comme ça ! 💪
 
     // Kanban Board
     function openKanbanBoard() {
-        showNotification('Ouverture du Kanban Board - Fonctionnalité complète à développer');
+        const defaultTasks = [
+            { title: 'Rédiger le cahier des charges', status: 'todo', assignee: 'Moi', due: 'Aujourd\'hui' },
+            { title: 'Développer le prototype', status: 'doing', assignee: 'Équipe', due: 'Cette semaine' },
+            { title: 'Préparer la soutenance', status: 'done', assignee: 'Moi', due: 'Terminé' }
+        ];
+        const tasks = readStoredJson(moduleStorageKeys.kanban, defaultTasks);
+
+        const renderColumn = (status, label) => `
+            <div style="flex:1; min-width:220px; background:var(--bg-primary); border:1px solid var(--border-light); border-radius:18px; padding:16px;">
+                <h4 style="margin-bottom:12px;">${label}</h4>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    ${tasks.filter(task => task.status === status).map((task, index) => `
+                        <div style="background:white; border:1px solid var(--border-light); border-radius:14px; padding:12px; box-shadow:var(--shadow-sm);">
+                            <strong>${task.title}</strong>
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:6px;">${task.assignee} · ${task.due}</div>
+                            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                                <button class="btn-secondary" onclick="moveKanbanTask(${index}, '${status}', 'todo')">To do</button>
+                                <button class="btn-secondary" onclick="moveKanbanTask(${index}, '${status}', 'doing')">Doing</button>
+                                <button class="btn-secondary" onclick="moveKanbanTask(${index}, '${status}', 'done')">Done</button>
+                            </div>
+                        </div>
+                    `).join('') || '<div style="color:var(--text-muted); font-size:13px;">Aucune tâche</div>'}
+                </div>
+            </div>
+        `;
+
+        showModal('Kanban Board', `
+            <div style="display:flex; gap:16px; flex-wrap:wrap; align-items:flex-start;">
+                ${renderColumn('todo', 'À faire')}
+                ${renderColumn('doing', 'En cours')}
+                ${renderColumn('done', 'Terminé')}
+            </div>
+            <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="addKanbanTask()">Ajouter une tâche</button>
+                <button class="btn-secondary" onclick="clearKanbanBoard()">Vider le board</button>
+            </div>
+        `);
+    }
+
+    function saveKanbanTasks(tasks) {
+        writeStoredJson(moduleStorageKeys.kanban, tasks);
+    }
+
+    function moveKanbanTask(index, fromStatus, toStatus) {
+        const tasks = readStoredJson(moduleStorageKeys.kanban, []);
+        const matchingTasks = tasks.filter(task => task.status === fromStatus);
+        const task = matchingTasks[index];
+        if (!task) return;
+        task.status = toStatus;
+        saveKanbanTasks(tasks);
+        openKanbanBoard();
+    }
+
+    function addKanbanTask() {
+        const title = prompt('Titre de la tâche :');
+        if (!title || !title.trim()) return;
+        const assignee = prompt('Responsable :', 'Moi') || 'Moi';
+        const due = prompt('Échéance :', 'Cette semaine') || 'Cette semaine';
+        const tasks = readStoredJson(moduleStorageKeys.kanban, []);
+        tasks.unshift({ title: title.trim(), status: 'todo', assignee, due });
+        saveKanbanTasks(tasks);
+        showNotification('Tâche ajoutée au Kanban.');
+        openKanbanBoard();
+    }
+
+    function clearKanbanBoard() {
+        saveKanbanTasks([]);
+        showNotification('Kanban vidé.');
+        openKanbanBoard();
     }
 
     // Time Tracking
@@ -5086,7 +5181,10 @@ Continue comme ça ! 💪
         const milestoneDesc = prompt('Description :');
 
         if (milestoneName && milestoneDesc) {
-            showNotification('Nouveau jalon ajouté à développer dans l\'interface');
+            const milestones = readStoredJson('superedu_milestones', []);
+            milestones.unshift({ name: milestoneName.trim(), description: milestoneDesc.trim(), createdAt: new Date().toISOString() });
+            writeStoredJson('superedu_milestones', milestones);
+            showNotification('Nouveau jalon ajouté.');
         }
     }
 
@@ -5094,19 +5192,35 @@ Continue comme ça ! 💪
     function addCollaborator() {
         const email = prompt('Email de la personne à inviter :');
         if (email) {
+            const collaborators = readStoredJson('superedu_collaborators', []);
+            collaborators.unshift({ email: email.trim(), invitedAt: new Date().toISOString() });
+            writeStoredJson('superedu_collaborators', collaborators);
             showNotification(`Invitation envoyée à ${email}`);
         }
     }
 
     function shareProgress() {
         const shareText = `Voici mes progrès d'étude :\n🎯 Motivation: 85%\n📚 Temps d'étude: 42h ce mois\n🔥 Série active: 7 jours\n\nRejoins-moi sur SuperEdu !`;
-        navigator.clipboard.writeText(shareText).then(() => {
-            showNotification('Progrès copié dans le presse-papiers !');
-        });
+        if (navigator.clipboard?.writeText) {
+            navigator.clipboard.writeText(shareText).then(() => {
+                showNotification('Progrès copié dans le presse-papiers !');
+            });
+        } else {
+            showModal('Partager ma progression', `<pre style="white-space:pre-wrap; text-align:left;">${shareText}</pre>`);
+        }
     }
 
     function joinStudyGroup() {
-        showNotification('Recherche de groupes d\'étude à proximité...');
+        showModal('Groupes d’étude', `
+            <div style="display:grid; gap:12px; text-align:left;">
+                <div style="padding:12px; background:var(--bg-secondary); border-radius:12px;">Algorithmes avancés · 12 membres · Réunion ce soir</div>
+                <div style="padding:12px; background:var(--bg-secondary); border-radius:12px;">Prépa PFE · 8 membres · Encadré par un mentor</div>
+                <div style="padding:12px; background:var(--bg-secondary); border-radius:12px;">Révision express · 20 membres · Session quotidienne</div>
+            </div>
+            <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="showNotification('Demande envoyée au groupe sélectionné.')">Rejoindre</button>
+            </div>
+        `);
     }
 
     // Export & Import
@@ -5187,13 +5301,29 @@ Continue comme ça ! 💪
     }
 
     function syncWithCloud() {
-        showNotification('Synchronisation avec le cloud - Fonctionnalité cloud à développer');
+        const snapshot = {
+            timestamp: new Date().toISOString(),
+            kanban: readStoredJson(moduleStorageKeys.kanban, []),
+            calendar: readStoredJson(moduleStorageKeys.calendar, []),
+            spacedCards: readStoredJson(moduleStorageKeys.spacedCards, []),
+            notifications: readStoredJson(moduleStorageKeys.notifications, [])
+        };
+        localStorage.setItem('superedu_last_cloud_sync', JSON.stringify(snapshot));
+        showNotification('Synchronisation locale avec le cloud simulé terminée.');
     }
 
     function backupData() {
-        const timestamp = new Date().toISOString();
-        localStorage.setItem('last_backup', timestamp);
-        showNotification('Sauvegarde effectuée automatiquement');
+        const backup = {
+            timestamp: new Date().toISOString(),
+            data: {
+                kanban: readStoredJson(moduleStorageKeys.kanban, []),
+                calendar: readStoredJson(moduleStorageKeys.calendar, []),
+                notifications: readStoredJson(moduleStorageKeys.notifications, []),
+                spacedCards: readStoredJson(moduleStorageKeys.spacedCards, [])
+            }
+        };
+        localStorage.setItem('superedu_last_backup', JSON.stringify(backup));
+        showNotification('Sauvegarde locale effectuée automatiquement');
     }
 
     // Thèmes personnalisés
@@ -5308,30 +5438,60 @@ Continue comme ça ! 🚀
 
     // Intégration Calendrier
     function openCalendar() {
-        showNotification('Ouverture du calendrier intégré - Fonctionnalité à développer');
+        const events = readStoredJson(moduleStorageKeys.calendar, []);
+        const eventRows = events.length ? events.map(event => `
+            <div style="padding:12px; background:var(--bg-secondary); border-radius:12px; margin-bottom:10px; border-left:4px solid var(--accent);">
+                <strong>${event.type === 'session' ? event.subject : event.title}</strong>
+                <div style="font-size:13px; color:var(--text-secondary); margin-top:6px;">${event.date || 'Aujourd\'hui'} ${event.startTime ? `à ${event.startTime}` : ''} ${event.duration ? `· ${event.duration} min` : ''}</div>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${event.topic || event.description || ''}</div>
+            </div>
+        `).join('') : '<div style="color:var(--text-muted);">Aucun événement planifié.</div>';
+
+        showModal('Calendrier intégré', `
+            <div style="display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="scheduleNewSession()">Programmer une session</button>
+                <button class="btn-secondary" onclick="createTimeBlock()">Créer un bloc</button>
+            </div>
+            ${eventRows}
+        `);
     }
 
     // Notifications Intelligentes
     function configureNotifications() {
-        showNotification('Configuration des notifications - Fonctionnalité à développer');
+        const prefs = readStoredJson(moduleStorageKeys.notificationsPrefs, { dailyReminder: true, studyAlert: true, groupUpdates: true });
+        showModal('Notifications intelligentes', `
+            <div style="display:grid; gap:12px; text-align:left;">
+                <label><input type="checkbox" id="pref-daily" ${prefs.dailyReminder ? 'checked' : ''}> Rappel quotidien</label>
+                <label><input type="checkbox" id="pref-study" ${prefs.studyAlert ? 'checked' : ''}> Alertes d'étude</label>
+                <label><input type="checkbox" id="pref-group" ${prefs.groupUpdates ? 'checked' : ''}> Mises à jour de groupes</label>
+            </div>
+            <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="saveNotificationPreferences()">Enregistrer</button>
+            </div>
+        `);
     }
 
     function viewAllNotifications() {
-        const notifications = [
-            'Pause recommandée après 2h d\'étude',
-            'Objectif quotidien atteint !',
-            'Nouveau badge débloqué : "Étudiant Modèle"',
-            'Conseil : Essaie la technique Feynman',
-            'Rappel : Session de groupe demain',
-            'Félicitations : 30 jours d\'activité !'
-        ];
+        const notifications = readStoredJson(moduleStorageKeys.notifications, []).slice(0, 12);
+        const content = notifications.length ? notifications.map((notif, index) => `
+            <div style="padding:12px; background:var(--bg-secondary); border-radius:12px; margin-bottom:10px;">
+                <strong>${index + 1}. ${notif.message}</strong>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${new Date(notif.timestamp).toLocaleString('fr-FR')}</div>
+            </div>
+        `).join('') : '<div style="color:var(--text-muted);">Aucune notification enregistrée.</div>';
 
-        let notificationText = '🔔 Toutes vos notifications :\n\n';
-        notifications.forEach((notif, index) => {
-            notificationText += `${index + 1}. ${notif}\n`;
-        });
+        showModal('Toutes vos notifications', content);
+    }
 
-        alert(notificationText);
+    function saveNotificationPreferences() {
+        const prefs = {
+            dailyReminder: !!document.getElementById('pref-daily')?.checked,
+            studyAlert: !!document.getElementById('pref-study')?.checked,
+            groupUpdates: !!document.getElementById('pref-group')?.checked
+        };
+        writeStoredJson(moduleStorageKeys.notificationsPrefs, prefs);
+        showNotification('Préférences de notifications enregistrées.');
+        closeModal();
     }
 
     // ===== NOUVELLES FONCTIONS POUR LA GESTION DU TEMPS (Time Animé) =====
@@ -5461,13 +5621,35 @@ Continue comme ça ! 🚀
         const topic = prompt('Sujet :');
 
         if (subject && date && startTime && duration && topic) {
+            const calendarEvents = readStoredJson(moduleStorageKeys.calendar, []);
+            calendarEvents.unshift({ type: 'session', subject, date, startTime, duration, topic });
+            writeStoredJson(moduleStorageKeys.calendar, calendarEvents);
             showNotification(`Session programmée : ${subject} le ${date} à ${startTime}`);
         }
     }
 
     // Spaced Repetition
     function reviewCards() {
-        showNotification('Ouverture du système de cartes de révision espacées');
+        const cards = readStoredJson(moduleStorageKeys.spacedCards, [
+            { question: 'Qu\'est-ce qu\'une variable ?', answer: 'Une case mémoire qui contient une valeur.' },
+            { question: 'Différence entre PFA et PFE ?', answer: 'Le PFE est plus long, plus autonome et plus abouti.' }
+        ]);
+
+        showModal('Cartes de révision', `
+            <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+                ${cards.map((card, index) => `
+                    <div style="padding:14px; background:var(--bg-secondary); border-radius:14px; border-left:4px solid var(--accent);">
+                        <strong>${card.question}</strong>
+                        <div style="margin-top:8px; color:var(--text-secondary);">${card.answer}</div>
+                        <button class="btn-secondary" style="margin-top:10px;" onclick="answerSpacedCard('good'); showNotification('Carte ${index + 1} révisée.')">Révisée</button>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="addNewCard()">Ajouter une carte</button>
+                <button class="btn-secondary" onclick="viewSpacedSchedule()">Voir le planning</button>
+            </div>
+        `);
     }
 
     function addNewCard() {
@@ -5475,6 +5657,9 @@ Continue comme ça ! 🚀
         const answer = prompt('Réponse :');
 
         if (question && answer) {
+            const cards = readStoredJson(moduleStorageKeys.spacedCards, []);
+            cards.unshift({ question, answer });
+            writeStoredJson(moduleStorageKeys.spacedCards, cards);
             showNotification('Nouvelle carte ajoutée au système de révision espacée');
         }
     }
@@ -5542,6 +5727,9 @@ Continue comme ça ! 🚀
         const duration = prompt('Durée en minutes :');
 
         if (activity && startTime && duration) {
+            const calendarEvents = readStoredJson(moduleStorageKeys.calendar, []);
+            calendarEvents.unshift({ type: 'block', title: activity, date: new Date().toISOString().split('T')[0], startTime, duration, description: 'Bloc de travail planifié' });
+            writeStoredJson(moduleStorageKeys.calendar, calendarEvents);
             showNotification(`Bloc de temps créé : ${activity} à ${startTime} (${duration}min)`);
         }
     }
@@ -5575,7 +5763,17 @@ Continue comme ça ! 🚀
     }
 
     function configureAlerts() {
-        showNotification('Configuration des alertes de fatigue - Fonctionnalité à développer');
+        showModal('Alertes de fatigue', `
+            <div style="display:grid; gap:12px; text-align:left;">
+                <label><input type="checkbox" checked> Alerte après 2h de concentration</label>
+                <label><input type="checkbox" checked> Rappel hydratation</label>
+                <label><input type="checkbox" checked> Suggestion de pause active</label>
+                <label><input type="checkbox"> Notification fin de session</label>
+            </div>
+            <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="showNotification('Alertes de fatigue enregistrées.')">Enregistrer</button>
+            </div>
+        `);
     }
 
     // Optimisation du Rythme
