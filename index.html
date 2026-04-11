@@ -1273,10 +1273,10 @@
                     </div>
 
                     <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
-                        <button class="btn-secondary" onclick="showNotification('Révision ciblée activée !')">Voir mes lacunes</button>
-                        <button class="btn-secondary" onclick="showNotification('Mode chrono lancé !')">Mode chrono</button>
-                        <button class="btn-secondary" onclick="showNotification('Fiche de révision générée !')">Fiche de révision</button>
-                        <button class="btn-secondary" onclick="showNotification('Nouvelle série de questions chargée !')">Nouvelle série</button>
+                        <button class="btn-secondary" onclick="showWeaknesses()">Voir mes lacunes</button>
+                        <button class="btn-secondary" onclick="startChronoMode()">Mode chrono</button>
+                        <button class="btn-secondary" onclick="generateReviewSheet()">Fiche de révision</button>
+                        <button class="btn-secondary" onclick="loadNewQuizSeries()">Nouvelle série</button>
                     </div>
                     <div id="quizArea">
                         <div class="quiz-question" id="quizQuestion">Quelle est la dérivée de x² ?</div>
@@ -1572,6 +1572,11 @@
                                 </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div id="dynamicResults" class="widget" style="margin-top:22px; display:none;">
+                        <div class="widget-title"><i class="fas fa-chart-simple"></i><span id="resultsTitle">Résultats</span></div>
+                        <div id="resultsContent" style="padding:8px 2px;"></div>
                     </div>
                 </div>
 
@@ -3863,19 +3868,97 @@
     let currentSubject = "Mathématiques";
     let quizData = quizBanks[currentSubject];
     let qIndex = 0, qScore = 0, qFinished = false;
+    let quizMisses = [];
+    let quizTimer = null;
+    let quizTimeLeft = 0;
+    let chronoModeEnabled = false;
+    const quizHistoryKey = 'superedu_lacunes_quiz_history';
     const qText = document.getElementById('quizQuestion');
     const qOpts = document.getElementById('quizOptions');
     const qNext = document.getElementById('quizNextBtn');
     const qFeed = document.getElementById('quizFeedback');
     const quizSubjectSelect = document.getElementById('quizSubject');
 
-    function switchQuizSubject(subject) {
-        currentSubject = subject;
-        quizData = quizBanks[subject];
+    function getQuizHistory() {
+        try {
+            const rawHistory = localStorage.getItem(quizHistoryKey);
+            return rawHistory ? JSON.parse(rawHistory) : [];
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function saveQuizHistory(history) {
+        localStorage.setItem(quizHistoryKey, JSON.stringify(history.slice(0, 40)));
+    }
+
+    function saveCurrentQuizResult() {
+        const history = getQuizHistory();
+        history.unshift({
+            subject: currentSubject,
+            score: qScore,
+            total: quizData.length,
+            misses: [...quizMisses],
+            mode: document.getElementById('quizMode')?.value || 'Mode classique',
+            date: new Date().toISOString()
+        });
+        saveQuizHistory(history);
+    }
+
+    function stopQuizTimer() {
+        if (quizTimer) {
+            clearInterval(quizTimer);
+            quizTimer = null;
+        }
+    }
+
+    function startQuizTimer(seconds) {
+        stopQuizTimer();
+        quizTimeLeft = seconds;
+        qNext.textContent = `${qIndex === quizData.length - 1 ? 'Terminer' : 'Suivant'} (${quizTimeLeft}s)`;
+        quizTimer = setInterval(() => {
+            quizTimeLeft -= 1;
+            if (quizTimeLeft <= 0) {
+                stopQuizTimer();
+                qFeed.style.display = 'block';
+                qFeed.innerHTML = '⏱️ Temps écoulé. Passage à la question suivante.';
+                if (qIndex === quizData.length - 1) {
+                    finishQuiz();
+                } else {
+                    qIndex += 1;
+                    renderQuiz();
+                }
+                return;
+            }
+            qNext.textContent = `${qIndex === quizData.length - 1 ? 'Terminer' : 'Suivant'} (${quizTimeLeft}s)`;
+        }, 1000);
+    }
+
+    function beginQuizSession(data, options = {}) {
+        quizData = data;
         qIndex = 0;
         qScore = 0;
         qFinished = false;
+        quizMisses = [];
+        chronoModeEnabled = !!options.chrono;
         renderQuiz();
+    }
+
+    function finishQuiz() {
+        stopQuizTimer();
+        const total = quizData.length;
+        const ratio = total ? qScore / total : 0;
+        const rec = ratio >= 0.85 ? '🌟 Excellent ! Aucune lacune majeure.' : (ratio >= 0.6 ? '📘 Bien, quelques révisions ciblées.' : '📚 Révise les bases et relance un quiz.');
+        qFeed.innerHTML = `<strong>Quiz terminé ! Score ${qScore}/${total}.</strong><br>${rec}`;
+        qFeed.style.display = 'block';
+        qNext.innerText = 'Recommencer';
+        qFinished = true;
+        saveCurrentQuizResult();
+    }
+
+    function switchQuizSubject(subject) {
+        currentSubject = subject;
+        beginQuizSession(quizBanks[subject]);
         showNotification(`Sujet sélectionné : ${subject}`);
     }
 
@@ -3890,31 +3973,42 @@
         qOpts.innerHTML = d.opts.map((opt, i) => `<label><input type="radio" name="quizOpt" value="${i}"> ${opt}</label>`).join('');
         qFeed.style.display = 'none';
         qNext.innerText = (qIndex === quizData.length-1) ? 'Terminer' : 'Suivant';
+        if (chronoModeEnabled) {
+            startQuizTimer(25);
+        } else {
+            stopQuizTimer();
+        }
     }
+
     function checkQuiz() {
         const selected = document.querySelector('input[name="quizOpt"]:checked');
         if(!selected) { showNotification("Choisis une réponse !"); return false; }
         const isCorrect = parseInt(selected.value) === quizData[qIndex].correct;
         if(isCorrect) qScore++;
+        if (!isCorrect) {
+            quizMisses.push({
+                subject: currentSubject,
+                question: quizData[qIndex].q,
+                answer: quizData[qIndex].opts[quizData[qIndex].correct]
+            });
+        }
         let msg = isCorrect ? "✅ Bonne réponse !" : `❌ La bonne réponse était : ${quizData[qIndex].opts[quizData[qIndex].correct]}`;
         qFeed.innerHTML = `${msg} Score: ${qScore}/${qIndex+1}`;
         qFeed.style.display = 'block';
         return true;
     }
+
     qNext.addEventListener('click', () => {
-        if(qFinished) { qIndex=0; qScore=0; qFinished=false; renderQuiz(); return; }
+        if(qFinished) { beginQuizSession(quizBanks[currentSubject]); return; }
         if(!checkQuiz()) return;
         if(qIndex === quizData.length-1) {
-            let rec = qScore===3 ? "🌟 Excellent ! Aucune lacune." : (qScore===2 ? "📘 Bien, quelques révisions." : "📚 Révise les bases.");
-            qFeed.innerHTML = `<strong>Quiz terminé ! Score ${qScore}/3.</strong><br>${rec}`;
-            qNext.innerText = 'Recommencer';
-            qFinished = true;
+            finishQuiz();
         } else {
             qIndex++;
             renderQuiz();
         }
     });
-    renderQuiz();
+    beginQuizSession(quizData);
 
     // Simulation
     document.getElementById('simulateBtnModule').addEventListener('click', () => {
@@ -5865,6 +5959,12 @@ Continue comme ça ! 🚀
         showNotification(`Quiz personnalisé lancé : ${customQuizConfig.questionsCount} questions, ${customQuizConfig.difficulty}, ${customQuizConfig.timeLimit} minutes !`);
     }
 
+    function parseQuizTimeLimit(limitValue) {
+        if (!limitValue || limitValue === 'Illimité') return 0;
+        const minutes = parseInt(limitValue, 10);
+        return Number.isNaN(minutes) ? 0 : minutes * 60;
+    }
+
     function generateCustomQuestions(config) {
         let availableQuestions = [];
 
@@ -5909,10 +6009,76 @@ Continue comme ça ! 🚀
             localStorage.setItem('customQuizStartTime', Date.now());
         }
 
-        // Rediriger vers la zone de quiz
-        document.getElementById('quizMode').value = 'Révision ciblée'; // Temporaire
-        // Ici on pourrait changer l'interface pour afficher le quiz personnalisé
+        // Basculer le quiz principal vers les questions personnalisées
+        const subjectSelect = document.getElementById('quizSubject');
+        if (subjectSelect && config.subjects !== 'Toutes matières' && quizBanks[config.subjects]) {
+            subjectSelect.value = config.subjects;
+            currentSubject = config.subjects;
+        }
+
+        const modeSelect = document.getElementById('quizMode');
+        if (modeSelect) modeSelect.value = config.timeLimit === 'Illimité' ? 'Révision ciblée' : 'Challenge chrono';
+
+        beginQuizSession(questions, { chrono: config.timeLimit !== 'Illimité' });
+        if (config.timeLimit !== 'Illimité') {
+            const totalSeconds = parseQuizTimeLimit(config.timeLimit);
+            if (totalSeconds > 0) {
+                const perQuestion = Math.max(15, Math.floor(totalSeconds / Math.max(1, questions.length)));
+                startQuizTimer(perQuestion);
+            }
+        }
+        document.getElementById('quizArea')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         showNotification('Session de quiz personnalisé démarrée !');
+    }
+
+    function showWeaknesses() {
+        const history = getQuizHistory();
+        if (!history.length) {
+            showResults('🔎 Mes lacunes', '<p>Aucun historique disponible. Lance un quiz pour identifier tes lacunes.</p>');
+            return;
+        }
+        const weaknessCount = {};
+        history.forEach(entry => {
+            (entry.misses || []).forEach(miss => {
+                weaknessCount[miss.question] = (weaknessCount[miss.question] || 0) + 1;
+            });
+        });
+        const sortedWeaknesses = Object.entries(weaknessCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const html = sortedWeaknesses.length
+            ? `<div style="display:grid; gap:10px;">${sortedWeaknesses.map(([question, count]) => `<div style="padding:12px; background:#fee2e2; border-radius:10px;"><strong>${question}</strong><br><small>Erreur répétée ${count} fois</small></div>`).join('')}</div>`
+            : '<p>Bravo, aucune lacune significative détectée récemment.</p>';
+        showResults('🔎 Mes lacunes', html);
+    }
+
+    function startChronoMode() {
+        const modeSelect = document.getElementById('quizMode');
+        if (modeSelect) modeSelect.value = 'Challenge chrono';
+        beginQuizSession([...quizData], { chrono: true });
+        showNotification('Mode chrono activé: 25 secondes par question.');
+    }
+
+    function generateReviewSheet() {
+        const history = getQuizHistory();
+        const last = history[0];
+        const misses = (last?.misses || []).slice(0, 3);
+        const html = `
+            <div style="display:grid; gap:12px;">
+                <div style="padding:12px; background:#f0f9ff; border-radius:10px;"><strong>Sujet conseillé:</strong> ${last?.subject || currentSubject}</div>
+                <div style="padding:12px; background:#fef3c7; border-radius:10px;"><strong>Objectif:</strong> Revoir ${misses.length || 3} notion(s) en 30 min</div>
+                <div style="padding:12px; background:#f8fafc; border-radius:10px;">
+                    <strong>Notions à revoir:</strong>
+                    <ul style="margin-top:8px; padding-left:18px;">
+                        ${(misses.length ? misses : [{ question: 'Réviser les fondamentaux du chapitre actuel' }]).map(item => `<li>${item.question}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+        showResults('📝 Fiche de révision', html);
+    }
+
+    function loadNewQuizSeries() {
+        beginQuizSession(shuffleArray([...quizData]), { chrono: chronoModeEnabled });
+        showNotification('Nouvelle série de questions chargée.');
     }
 
     function saveQuizConfig() {
@@ -6074,7 +6240,14 @@ Continue comme ça ! 🚀
     }
 
     // Génération de Contenu IA
+    let pendingGeneratedQuestions = [];
+
     function generateQuestions() {
+        pendingGeneratedQuestions = [
+            { q: 'Quelle est la dérivée de sin(x)×cos(x) ?', opts: ['cos²(x)-sin²(x)', 'sin²(x)+cos²(x)', '2sin(x)', '2cos(x)'], correct: 0 },
+            { q: 'Résoudre l\'équation différentielle dy/dx = 2x', opts: ['y = x² + C', 'y = 2x + C', 'y = x + C', 'y = 2x² + C'], correct: 0 },
+            { q: 'Calculer l\'intégrale de e^x dx entre 0 et 1', opts: ['e - 1', '1 - e', 'e', '1'], correct: 0 }
+        ];
         const questions = `
             <div style="display:grid; gap:12px;">
                 <div style="padding:12px; background:#f0f9ff; border-radius:8px;">
@@ -6350,10 +6523,25 @@ Points forts : Algèbre, Géométrie
 
     // Fonctions utilitaires
     function showResults(title, content) {
-        document.getElementById('resultsTitle').textContent = title;
-        document.getElementById('resultsContent').innerHTML = content;
-        document.getElementById('dynamicResults').style.display = 'block';
-        document.getElementById('dynamicResults').scrollIntoView({ behavior: 'smooth' });
+        let wrapper = document.getElementById('dynamicResults');
+        if (!wrapper) {
+            const moduleLacunes = document.getElementById('module-lacunes');
+            if (moduleLacunes) {
+                wrapper = document.createElement('div');
+                wrapper.id = 'dynamicResults';
+                wrapper.className = 'widget';
+                wrapper.style.marginTop = '22px';
+                wrapper.innerHTML = '<div class="widget-title"><i class="fas fa-chart-simple"></i><span id="resultsTitle">Résultats</span></div><div id="resultsContent" style="padding:8px 2px;"></div>';
+                moduleLacunes.appendChild(wrapper);
+            }
+        }
+        const titleEl = document.getElementById('resultsTitle');
+        const contentEl = document.getElementById('resultsContent');
+        if (!wrapper || !titleEl || !contentEl) return;
+        titleEl.textContent = title;
+        contentEl.innerHTML = content;
+        wrapper.style.display = 'block';
+        wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function flipCard(card) {
@@ -6369,11 +6557,31 @@ Points forts : Algèbre, Géométrie
     }
 
     function addToQuiz() {
-        showNotification('Questions ajoutées à ton quiz personnalisé !');
+        if (!pendingGeneratedQuestions.length) {
+            showNotification('Génère d\'abord des questions IA.');
+            return;
+        }
+        quizData = [...pendingGeneratedQuestions, ...quizData];
+        beginQuizSession(quizData, { chrono: false });
+        showNotification(`${pendingGeneratedQuestions.length} questions ajoutées à ton quiz.`);
     }
 
     function exportFlashcards() {
-        showNotification('Flashcards exportées au format PDF !');
+        const flashcardsText = [
+            'Dérivée de x^n => n×x^(n-1)',
+            'Intégrale de 1/x => ln|x| + C',
+            'Loi de Newton => F = m×a'
+        ].join('\n');
+        const blob = new Blob([flashcardsText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'flashcards-lacunes-quiz.txt';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showNotification('Flashcards exportées avec succès.');
     }
 
     function joinGroup(groupId) {
