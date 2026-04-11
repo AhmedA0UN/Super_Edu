@@ -755,6 +755,7 @@
             <!-- ===== PAGE: COLLABORATION ===== -->
             <div class="page-container" id="page-collaboration">
                 <div class="category-header"><h1><i class="fas fa-users"></i> Espace Collaboration</h1><p>Étudiants ↔ Étudiants · Étudiants ↔ Enseignants · Enseignants ↔ Enseignants</p></div>
+                <div style="margin: 0 0 20px 0;"><button class="btn-secondary" onclick="openCollaborationDashboard()"><i class="fas fa-chart-line"></i> Tableau Collaboration</button></div>
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:36px;">
                     <div class="widget" style="text-align:center;"><i class="fas fa-user-graduate" style="font-size:56px;color:var(--accent);margin-bottom:20px;"></i><h3 style="margin-bottom:12px;">Étudiants + Étudiants</h3><p style="color:var(--text-secondary);margin:16px 0;">Groupes d'étude, partage de notes, projets collaboratifs</p><button class="btn-primary" onclick="showNotification('Explorer les groupes...')">Rejoindre</button></div>
                     <div class="widget" style="text-align:center;"><i class="fas fa-chalkboard" style="font-size:56px;color:var(--accent);margin-bottom:20px;"></i><h3 style="margin-bottom:12px;">Étudiants + Enseignants</h3><p style="color:var(--text-secondary);margin:16px 0;">Sessions Q/R, mentorat, suivi de projets</p><button class="btn-primary" onclick="showNotification('Voir les sessions...')">Participer</button></div>
@@ -3279,11 +3280,12 @@
             const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modalTitle');
             const modalMessage = document.getElementById('modalMessage');
+            const processedMessage = processCollaborationNotification(message);
             
             modalTitle.textContent = 'Information';
-            modalMessage.textContent = message;
+            modalMessage.textContent = processedMessage;
             modal.classList.add('active');
-            appendNotificationHistory(message);
+            appendNotificationHistory(processedMessage);
             
             setTimeout(() => {
                 modal.classList.remove('active');
@@ -3342,7 +3344,26 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
             navItems.forEach(item => item.addEventListener('click', function(e) { e.preventDefault(); if(this.dataset.page) switchPage(this.dataset.page); }));
-            document.querySelectorAll('.filter-tab').forEach(tab => tab.addEventListener('click', function() { document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active')); this.classList.add('active'); showNotification(`Filtre appliqué: ${this.textContent}`); }));
+            document.querySelectorAll('.filter-tab').forEach(tab => tab.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                if (document.getElementById('page-clubs')?.classList.contains('active-page')) {
+                    applyClubsFilter(this.textContent);
+                }
+                showNotification(`Filtre appliqué: ${this.textContent}`);
+            }));
+
+            document.addEventListener('click', function(event) {
+                const joinBtn = event.target.closest('#page-collaboration .collab-room .join-btn');
+                if (!joinBtn) return;
+                const roomName = joinBtn.closest('.collab-room')?.querySelector('.room-details h4')?.textContent?.trim();
+                if (!roomName) return;
+                const state = readCollaborationState();
+                if (!state.joinedRooms.includes(roomName)) {
+                    state.joinedRooms.push(roomName);
+                    writeCollaborationState(state);
+                }
+            });
         });
         function switchToClubs() {
             document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active-page'));
@@ -3376,6 +3397,141 @@
 
         function writeStoredJson(key, value) {
             localStorage.setItem(key, JSON.stringify(value));
+        }
+
+        const collaborationStorageKey = 'superedu_collaboration_state';
+
+        function readCollaborationState() {
+            return readStoredJson(collaborationStorageKey, {
+                exploredGroups: 0,
+                teacherSessionsViewed: 0,
+                teacherSpacesAccessed: 0,
+                joinedRooms: [],
+                spacesCreated: 0,
+                joinedClubs: [],
+                clubInfosViewed: 0,
+                eventsRegistered: [],
+                psychologistAppointments: [],
+                collectiveSessions: 0,
+                genericSessionJoins: 0,
+                supportBookings: 0,
+                updatedAt: null
+            });
+        }
+
+        function writeCollaborationState(state) {
+            state.updatedAt = new Date().toISOString();
+            writeStoredJson(collaborationStorageKey, state);
+        }
+
+        function processCollaborationNotification(message) {
+            const state = readCollaborationState();
+
+            if (message === 'Explorer les groupes...') {
+                state.exploredGroups += 1;
+                writeCollaborationState(state);
+                return `Groupes explorés. Total explorations: ${state.exploredGroups}.`;
+            }
+
+            if (message === 'Voir les sessions...') {
+                state.teacherSessionsViewed += 1;
+                writeCollaborationState(state);
+                return `Sessions étudiants-enseignants consultées (${state.teacherSessionsViewed}).`;
+            }
+
+            if (message === 'Espace enseignants...') {
+                state.teacherSpacesAccessed += 1;
+                writeCollaborationState(state);
+                return `Espace enseignants ouvert (${state.teacherSpacesAccessed} accès).`;
+            }
+
+            if (message === 'Rejoindre la salle...' || message === 'Rejoindre la session...') {
+                state.genericSessionJoins += 1;
+                writeCollaborationState(state);
+                return `Inscription à la session confirmée. Sessions rejointes: ${state.genericSessionJoins}.`;
+            }
+
+            if (message === 'Création d\'un nouvel espace...' || message === 'Création d\'un nouvel espace...') {
+                state.spacesCreated += 1;
+                writeCollaborationState(state);
+                return `Nouvel espace de collaboration créé (${state.spacesCreated}).`;
+            }
+
+            if (message.startsWith('Demande d\'adhésion')) {
+                const clubName = message.replace('Demande d\'adhésion au ', '').replace('Demande d\'adhésion à ', '').replace(' envoyée !', '').trim();
+                if (clubName && !state.joinedClubs.includes(clubName)) {
+                    state.joinedClubs.push(clubName);
+                }
+                writeCollaborationState(state);
+                return `${clubName || 'Club'}: demande d'adhésion envoyée. Clubs suivis: ${state.joinedClubs.length}.`;
+            }
+
+            if (message.includes('Plus d\'informations')) {
+                state.clubInfosViewed += 1;
+                writeCollaborationState(state);
+                return `Fiche d'information affichée. Consultations: ${state.clubInfosViewed}.`;
+            }
+
+            if (message.startsWith('Inscription au ') || message.startsWith('Inscription à l\'') || message.startsWith('Inscription à la ') || message === 'Inscription à la séance...') {
+                state.collectiveSessions += 1;
+                state.eventsRegistered.unshift({ title: message.replace('Inscription ', '').replace('...', '').trim(), date: new Date().toISOString() });
+                state.eventsRegistered = state.eventsRegistered.slice(0, 25);
+                writeCollaborationState(state);
+                return `Inscription confirmée. Événements/séances enregistrés: ${state.collectiveSessions}.`;
+            }
+
+            if (message.startsWith('Prendre RDV avec')) {
+                const doctor = message.replace('Prendre RDV avec ', '').replace('...', '').trim();
+                state.psychologistAppointments.unshift({ doctor, date: new Date().toISOString() });
+                state.psychologistAppointments = state.psychologistAppointments.slice(0, 20);
+                writeCollaborationState(state);
+                return `Demande de rendez-vous enregistrée avec ${doctor}.`;
+            }
+
+            if (message === 'Réservation d\'une séance...') {
+                state.supportBookings += 1;
+                writeCollaborationState(state);
+                return `Séance réservée. Réservations de soutien: ${state.supportBookings}.`;
+            }
+
+            return message;
+        }
+
+        function openCollaborationDashboard() {
+            const state = readCollaborationState();
+            const html = `
+                <div style="display:grid; gap:10px; text-align:left;">
+                    <div><strong>Groupes explorés:</strong> ${state.exploredGroups}</div>
+                    <div><strong>Sessions enseignants consultées:</strong> ${state.teacherSessionsViewed}</div>
+                    <div><strong>Sessions rejointes:</strong> ${state.genericSessionJoins}</div>
+                    <div><strong>Salles rejointes:</strong> ${state.joinedRooms.length ? state.joinedRooms.join(', ') : 'Aucune'}</div>
+                    <div><strong>Espaces créés:</strong> ${state.spacesCreated}</div>
+                    <div><strong>Clubs suivis:</strong> ${state.joinedClubs.length ? state.joinedClubs.join(', ') : 'Aucun'}</div>
+                    <div><strong>Inscriptions événements/séances:</strong> ${state.collectiveSessions}</div>
+                    <div><strong>Demandes RDV psychologue:</strong> ${state.psychologistAppointments.length}</div>
+                    <div style="font-size:12px; color:var(--text-muted);">Dernière mise à jour: ${state.updatedAt ? new Date(state.updatedAt).toLocaleString('fr-FR') : 'jamais'}</div>
+                </div>
+            `;
+            showModal('Tableau Collaboration', html);
+        }
+
+        function applyClubsFilter(label) {
+            const clubCards = document.querySelectorAll('#page-clubs .club-card');
+            if (!clubCards.length) return;
+            const normalized = (label || '').trim().toLowerCase();
+            clubCards.forEach(card => {
+                if (normalized === 'tous') {
+                    card.style.display = '';
+                    return;
+                }
+                const categoryText = (card.querySelector('.club-category')?.textContent || '').toLowerCase();
+                const matches =
+                    (normalized === 'tech' && (categoryText.includes('tech') || categoryText.includes('innovation'))) ||
+                    (normalized === 'culture' && categoryText.includes('culture')) ||
+                    (normalized === 'sport' && categoryText.includes('sport')) ||
+                    (normalized === 'social' && (categoryText.includes('social') || categoryText.includes('leadership') || categoryText.includes('international')));
+                card.style.display = matches ? '' : 'none';
+            });
         }
 
         function appendNotificationHistory(message) {
