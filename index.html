@@ -4011,6 +4011,56 @@
     beginQuizSession(quizData);
 
     // Simulation
+    const simulationHistoryKey = 'superedu_simulation_history';
+    let lastSimulationSummaryText = '';
+
+    function getSimulationHistory() {
+        try {
+            return JSON.parse(localStorage.getItem(simulationHistoryKey) || '[]');
+        } catch (error) {
+            return [];
+        }
+    }
+
+    function saveSimulationHistory(entry) {
+        const history = getSimulationHistory();
+        history.unshift(entry);
+        localStorage.setItem(simulationHistoryKey, JSON.stringify(history.slice(0, 20)));
+    }
+
+    function exportSimulationSummary(summaryText, fileName) {
+        const blob = new Blob([summaryText], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showNotification('Résumé de simulation exporté.');
+    }
+
+    function exportLastSimulationSummary() {
+        if (!lastSimulationSummaryText) {
+            showNotification('Aucun résumé de simulation à exporter.');
+            return;
+        }
+        exportSimulationSummary(lastSimulationSummaryText, 'simulation-parcours.txt');
+    }
+
+    function openSimulationHistory() {
+        const history = getSimulationHistory();
+        const content = history.length ? history.map((item, index) => `
+            <div style="padding:12px; background:var(--bg-secondary); border-radius:12px; margin-bottom:10px; text-align:left;">
+                <strong>${index + 1}. ${item.domain} · ${item.goal}</strong>
+                <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">${new Date(item.timestamp).toLocaleString('fr-FR')}</div>
+                <div style="font-size:13px; color:var(--text-secondary); margin-top:6px;">Métier: ${item.job} | Niveau: ${item.level} | Score CV: ${item.cvScore ?? 'N/A'}</div>
+            </div>
+        `).join('') : '<div style="color:var(--text-muted);">Aucun historique de simulation.</div>';
+        showModal('Historique des simulations', content);
+    }
+
     document.getElementById('simulateBtnModule').addEventListener('click', () => {
         const domain = document.getElementById('simDomain').value;
         const skill = document.getElementById('simSkill').value;
@@ -4102,6 +4152,8 @@
         const templateDescription = cvTemplates[cvTemplate];
         const cvFileName = document.getElementById('simCVFileName').textContent || '';
         const evalMode = document.getElementById('simCVEvalMode').value;
+        const linkedInUrl = document.getElementById('simLinkedIn').value.trim();
+        const profileStrength = Math.min(100, Math.max(35, Math.round((hours * 3) + (level === 'Avancé' ? 18 : level === 'Intermédiaire' ? 10 : 0) + (goal === 'Emploi' ? 8 : 0))));
 
         const graphHtml = evalMode === 'Diagrammes' ? `
             <div style="display:grid; gap:16px;">
@@ -4131,6 +4183,34 @@
                 </div>
             </div>
         ` : '';
+
+        const summaryText = [
+            `Simulation parcours`,
+            `Domaine: ${domain}`,
+            `Compétence: ${skill}`,
+            `Niveau: ${level}`,
+            `Objectif: ${goal}`,
+            `Format: ${format}`,
+            `Durée estimée: ${timeline}`,
+            `Force actuelle: ${strength}`,
+            `Cible: ${industry}`,
+            `LinkedIn: ${linkedInUrl || 'non renseigné'}`,
+            `CV template: ${cvTemplate}`,
+            `Score de profil simulé: ${profileStrength}/100`
+        ].join('\n');
+        lastSimulationSummaryText = summaryText;
+
+        saveSimulationHistory({
+            timestamp: new Date().toISOString(),
+            domain,
+            skill,
+            level,
+            goal,
+            format,
+            job,
+            cvScore: profileStrength,
+            timeline
+        });
 
         resDiv.innerHTML = `
             <h4>🔮 Parcours suggéré</h4>
@@ -4167,6 +4247,7 @@
                 <p style="margin:0;">${cvFocus} — ${cvTips[cvFocus]}</p>
                 <p style="margin:10px 0 0; color: var(--text-secondary);"><strong>Modèle CV :</strong> ${cvTemplate} — ${templateDescription}</p>
                 ${cvFileName ? `<p style="margin:10px 0 0; color: var(--text-secondary);"><strong>Fichier PDF chargé :</strong> ${cvFileName}</p>` : ''}
+                <p style="margin:10px 0 0; color: var(--text-secondary);"><strong>LinkedIn :</strong> ${linkedInUrl || 'non renseigné'}</p>
             </div>
             ${evalMode === 'Diagrammes' ? `
                 <div style="margin-top:16px; padding:18px; border-radius:18px; background: #f8fafc; border:1px solid rgba(59,130,246,0.18);">
@@ -4190,6 +4271,13 @@
                     </div>
                 </div>
             ` : ''}
+            <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:10px;">
+                <button class="btn-primary" onclick="generateCV()" style="flex:1; min-width:180px;">Générer mon CV</button>
+                <button class="btn-secondary" onclick="evaluateCV()" style="flex:1; min-width:180px;">Évaluer mon CV</button>
+                <button class="btn-secondary" onclick="generateRoadmap()" style="flex:1; min-width:180px;">Générer la Roadmap</button>
+                <button class="btn-secondary" onclick="openSimulationHistory()" style="flex:1; min-width:180px;">Historique</button>
+                <button class="btn-secondary" onclick="exportLastSimulationSummary()" style="flex:1; min-width:180px;">Exporter résumé</button>
+            </div>
         `;
         resDiv.style.display = 'block';
     });
