@@ -42,3 +42,8 @@ Aider les étudiants à **améliorer et perfectionner leurs compétences** grâc
 
 👉 **En résumé** :  
 **SuperEdu** est une plateforme éducative hybride qui combine **cours interactifs, développement personnel, collaboration académique et soutien psychologique**, enrichie par un **agent AI** pour guider les étudiants dans leur parcours.
+
+---
+
+### 📄 Licence
+Ce projet est distribué sous licence **MIT**. Voir le fichier `LICENCE`.
