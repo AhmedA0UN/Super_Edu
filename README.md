@@ -45,3 +45,5 @@ Aider les étudiants à **améliorer et perfectionner leurs compétences** grâc
 
 ---
 
+### 📄 Licence
+Ce projet est distribué sous une tri-licence au choix : **GPL-3.0-or-later**, **MIT** ou **Apache-2.0**. Voir le fichier `LICENCE` et les notices de licence dans `LICENSE-GPL-3.0-or-later`, `LICENSE-MIT` et `LICENSE-APACHE-2.0`.
