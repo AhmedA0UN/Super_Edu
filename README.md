@@ -1,4 +1,4 @@
-# SuperEdu_isimg
+# SuperEdu
 
 ### 🎓 Objectif principal  
 Aider les étudiants à **améliorer et perfectionner leurs compétences** grâce à une plateforme en ligne interactive et complète.  
@@ -41,4 +41,4 @@ Aider les étudiants à **améliorer et perfectionner leurs compétences** grâc
 ---
 
 👉 **En résumé** :  
-**SuperEdu_isimg** est une plateforme éducative hybride qui combine **cours interactifs, développement personnel, collaboration académique et soutien psychologique**, enrichie par un **agent AI** pour guider les étudiants dans leur parcours.
+**SuperEdu** est une plateforme éducative hybride qui combine **cours interactifs, développement personnel, collaboration académique et soutien psychologique**, enrichie par un **agent AI** pour guider les étudiants dans leur parcours.
