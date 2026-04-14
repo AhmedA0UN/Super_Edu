@@ -2,9 +2,30 @@
 
 Plateforme web educative orientee vers l'apprentissage, la collaboration academique et l'accompagnement des etudiants.
 
+## Sommaire
+
+- [Objectif](#objectif)
+- [Public cible](#public-cible)
+- [Fonctionnalites](#fonctionnalites)
+- [Apercu des pages](#apercu-des-pages)
+- [Structure du projet](#structure-du-projet)
+- [Demarrage rapide](#demarrage-rapide)
+- [Utilisation](#utilisation)
+- [Technologies](#technologies)
+- [Organisation du contenu](#organisation-du-contenu)
+- [Roadmap](#roadmap-proposition)
+- [Contribution](#contribution)
+- [Licence](#licence)
+
 ## Objectif
 
 Super_Edu a pour but d'aider les etudiants a renforcer leurs competences academiques et professionnelles via une experience numerique moderne.
+
+## Public cible
+
+- Etudiants en formation initiale ou continue.
+- Enseignants souhaitant partager des contenus et collaborer.
+- Mentors/encadrants accompagnant les parcours de progression.
 
 ## Fonctionnalites
 
@@ -41,9 +62,26 @@ Super_Edu/
 
 Ce projet est statique (HTML/CSS/JS) et ne necessite pas de build complexe.
 
+## Demarrage rapide
+
 1. Cloner le depot.
 2. Ouvrir le dossier dans VS Code.
 3. Lancer `index.html` avec une extension de serveur local (exemple : Live Server) ou ouvrir directement le fichier dans le navigateur.
+
+Option via terminal (Python, si disponible) :
+
+```bash
+python -m http.server 8080
+```
+
+Puis ouvrir : `http://localhost:8080`
+
+## Utilisation
+
+1. Ouvrir la page d'accueil (`index.html`).
+2. Naviguer vers les pages de contenu dans `Wpages/`.
+3. Explorer les sections pedagogiques (videos, conseils, certifications, mentor IA).
+4. Adapter les textes/styles dans les fichiers HTML/CSS selon vos besoins.
 
 ## Technologies
 
@@ -52,6 +90,15 @@ Ce projet est statique (HTML/CSS/JS) et ne necessite pas de build complexe.
 - JavaScript (vanilla)
 - Font Awesome (CDN)
 - Google Fonts (CDN)
+
+## Organisation du contenu
+
+- `imgs/` : images et illustrations.
+- `media/` : assets medias (audio/video/documents selon usage).
+- `src/video/` : ressources video source.
+- `src/presentaions/` : ressources de presentation (nom de dossier conserve tel quel dans le projet).
+- `config/` : fichiers de configuration additionnels.
+- `Wpages/` : pages web secondaires et prototypes.
 
 ## Roadmap (proposition)
 
@@ -68,6 +115,12 @@ Les contributions sont bienvenues.
 2. Creation d'une branche de fonctionnalite
 3. Commit des modifications
 4. Ouverture d'une pull request
+
+Bonnes pratiques recommandees :
+
+- Garder les commits atomiques et explicites.
+- Verifier l'affichage desktop et mobile avant PR.
+- Eviter les regressions visuelles sur `index.html` et les pages dans `Wpages/`.
 
 ## Licence
 
