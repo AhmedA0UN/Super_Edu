@@ -5,6 +5,7 @@ Plateforme web educative orientee vers l'apprentissage, la collaboration academi
 ## Sommaire
 
 - [Objectif](#objectif)
+- [Etat du projet](#etat-du-projet)
 - [Public cible](#public-cible)
 - [Fonctionnalites](#fonctionnalites)
 - [Apercu des pages](#apercu-des-pages)
@@ -12,7 +13,11 @@ Plateforme web educative orientee vers l'apprentissage, la collaboration academi
 - [Demarrage rapide](#demarrage-rapide)
 - [Utilisation](#utilisation)
 - [Technologies](#technologies)
+- [Compatibilite](#compatibilite)
 - [Organisation du contenu](#organisation-du-contenu)
+- [Deploiement](#deploiement)
+- [FAQ](#faq)
+- [Depannage](#depannage)
 - [Roadmap](#roadmap-proposition)
 - [Contribution](#contribution)
 - [Licence](#licence)
@@ -20,6 +25,12 @@ Plateforme web educative orientee vers l'apprentissage, la collaboration academi
 ## Objectif
 
 Super_Edu a pour but d'aider les etudiants a renforcer leurs competences academiques et professionnelles via une experience numerique moderne.
+
+## Etat du projet
+
+- Statut : prototype fonctionnel d'interface educative.
+- Type : application web statique (pas de backend obligatoire pour l'instant).
+- Priorite actuelle : structuration du contenu, experience utilisateur et evolution vers une base plus modulaire.
 
 ## Public cible
 
@@ -91,6 +102,12 @@ Puis ouvrir : `http://localhost:8080`
 - Font Awesome (CDN)
 - Google Fonts (CDN)
 
+## Compatibilite
+
+- Navigateurs modernes recommandes : Chrome, Edge, Firefox.
+- Resolution cible : desktop et mobile.
+- Connexion internet requise pour charger les ressources CDN (fonts et icones).
+
 ## Organisation du contenu
 
 - `imgs/` : images et illustrations.
@@ -99,6 +116,40 @@ Puis ouvrir : `http://localhost:8080`
 - `src/presentaions/` : ressources de presentation (nom de dossier conserve tel quel dans le projet).
 - `config/` : fichiers de configuration additionnels.
 - `Wpages/` : pages web secondaires et prototypes.
+
+## Deploiement
+
+Ce projet peut etre deployee sur n'importe quel hebergement statique.
+
+Exemples :
+
+- GitHub Pages
+- Netlify
+- Vercel (mode statique)
+- Serveur Apache/Nginx classique
+
+Principe : publier le contenu du dossier racine avec `index.html` comme point d'entree.
+
+## FAQ
+
+Q: Faut-il installer Node.js pour lancer le projet ?
+
+R: Non. Le projet fonctionne sans build, directement dans le navigateur (ou via un petit serveur local).
+
+Q: Pourquoi certaines ressources ne se chargent pas hors ligne ?
+
+R: Les polices et icones charges via CDN necessitent internet. Vous pouvez les remplacer par des fichiers locaux si besoin.
+
+Q: Peut-on brancher un backend plus tard ?
+
+R: Oui. La structure actuelle peut evoluer vers une architecture frontend + API.
+
+## Depannage
+
+- Si la page s'affiche mal, verifier que tous les chemins de fichiers sont valides.
+- Si les icones n'apparaissent pas, verifier l'acces au CDN Font Awesome.
+- Si les polices ne se chargent pas, verifier l'acces au CDN Google Fonts.
+- Si l'ouverture directe du fichier HTML pose probleme, demarrer un serveur local (`python -m http.server 8080`).
 
 ## Roadmap (proposition)
 
