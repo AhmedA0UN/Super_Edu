@@ -59,7 +59,7 @@ Super_Edu a pour but d'aider les etudiants a renforcer leurs competences academi
 
 ### Vue principale
 
-![Super_Edu - Vue principale](src/v1.png)
+![Super_Edu - Vue principale](src/p1.png)
 
 <!--
 ### Galerie
